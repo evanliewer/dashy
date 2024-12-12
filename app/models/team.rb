@@ -13,6 +13,8 @@ class Team < ApplicationRecord
   has_many :retreats, dependent: :destroy
   has_many :reservations, dependent: :destroy
   has_many :items_tags, class_name: "Items::Tag", dependent: :destroy
+  has_many :flights, dependent: :destroy
+  has_many :flights_timeframes, class_name: "Flights::Timeframe", dependent: :destroy
   # 🚅 add has_many associations above.
 
   # 🚅 add oauth providers above.
