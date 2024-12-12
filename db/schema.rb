@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_12_11_223549) do
+ActiveRecord::Schema[7.2].define(version: 2024_12_12_005532) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -93,6 +93,16 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_11_223549) do
     t.index ["team_id"], name: "index_demographics_on_team_id"
   end
 
+  create_table "departments", force: :cascade do |t|
+    t.bigint "team_id", null: false
+    t.integer "sort_order"
+    t.string "name"
+    t.boolean "dashboard", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["team_id"], name: "index_departments_on_team_id"
+  end
+
   create_table "integrations_stripe_installations", force: :cascade do |t|
     t.bigint "team_id", null: false
     t.bigint "oauth_stripe_account_id", null: false
@@ -113,6 +123,19 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_11_223549) do
     t.bigint "invitation_list_id"
     t.index ["invitation_list_id"], name: "index_invitations_on_invitation_list_id"
     t.index ["team_id"], name: "index_invitations_on_team_id"
+  end
+
+  create_table "locations", force: :cascade do |t|
+    t.bigint "team_id", null: false
+    t.integer "sort_order"
+    t.string "name"
+    t.string "initials"
+    t.integer "capacity"
+    t.string "hex_color"
+    t.string "active"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["team_id"], name: "index_locations_on_team_id"
   end
 
   create_table "memberships", id: :serial, force: :cascade do |t|
@@ -191,6 +214,15 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_11_223549) do
     t.datetime "updated_at", precision: nil, null: false
     t.index ["uid"], name: "index_oauth_stripe_accounts_on_uid", unique: true
     t.index ["user_id"], name: "index_oauth_stripe_accounts_on_user_id"
+  end
+
+  create_table "organizations", force: :cascade do |t|
+    t.bigint "team_id", null: false
+    t.string "name"
+    t.string "website"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["team_id"], name: "index_organizations_on_team_id"
   end
 
   create_table "scaffolding_absolutely_abstract_creative_concepts", force: :cascade do |t|
@@ -354,10 +386,12 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_11_223549) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "demographics", "teams"
+  add_foreign_key "departments", "teams"
   add_foreign_key "integrations_stripe_installations", "oauth_stripe_accounts"
   add_foreign_key "integrations_stripe_installations", "teams"
   add_foreign_key "invitations", "account_onboarding_invitation_lists", column: "invitation_list_id"
   add_foreign_key "invitations", "teams"
+  add_foreign_key "locations", "teams"
   add_foreign_key "memberships", "invitations"
   add_foreign_key "memberships", "memberships", column: "added_by_id"
   add_foreign_key "memberships", "oauth_applications", column: "platform_agent_of_id"
@@ -367,6 +401,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_11_223549) do
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_applications", "teams"
   add_foreign_key "oauth_stripe_accounts", "users"
+  add_foreign_key "organizations", "teams"
   add_foreign_key "scaffolding_absolutely_abstract_creative_concepts", "teams"
   add_foreign_key "scaffolding_completely_concrete_tangible_things", "scaffolding_absolutely_abstract_creative_concepts", column: "absolutely_abstract_creative_concept_id"
   add_foreign_key "scaffolding_completely_concrete_tangible_things_assignments", "memberships"

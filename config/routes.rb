@@ -68,6 +68,9 @@ Rails.application.routes.draw do
         end
 
         resources :demographics, concerns: [:sortable]
+        resources :departments, concerns: [:sortable]
+        resources :locations, concerns: [:sortable]
+        resources :organizations
       end
     end
   end

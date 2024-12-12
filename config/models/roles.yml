@@ -1,5 +1,8 @@
 default:
   models:
+    Organization: read
+    Location: read
+    Department: read
     Demographic: read
     Team: read
     Membership:
@@ -29,6 +32,9 @@ admin:
     - admin
     - editor
   models:
+    Organization: manage
+    Location: manage
+    Department: manage
     Demographic: manage
     Team: manage
     Membership: manage
