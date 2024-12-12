@@ -220,3 +220,10 @@ gem "pry"
 # that you run into a merge conflict in the future.
 
 # 🚅 super scaffolding will insert new oauth providers above this line.
+
+gem 'csv'
+gem 'paper_trail'
+gem 'simple_calendar'
+gem "bullet_train-audit_logs", git: "https://github.com/bullet-train-pro/bullet_train-audit_logs.git"
+gem "bullet_train-action_models", git: "https://github.com/bullet-train-pro/bullet_train-action_models.git"
+

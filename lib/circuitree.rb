@@ -172,6 +172,8 @@ module Circuitree
 
 
                    ##Save Host
+
+                   begin
                    puts "Checking User for Host"
                    if val['FHHost'].present?
                      puts "Creating: " + val['FHHost']
@@ -186,6 +188,7 @@ module Circuitree
                       end  
  
                     puts "Checking Membership for Host"
+                     puts "email: " + first + "." + last + "@foresthome.org"
                       membership = Membership.find_or_create_by(team_id: team.id, user_id: user.id, user_first_name: first, user_last_name: last) do |m|
                         puts "Creating Membership"
                         m.user_email = first + "." + last + "@foresthome.org"
@@ -197,7 +200,13 @@ module Circuitree
                       retreat_host = Retreats::HostTag.find_or_create_by!(retreat_id: retreat.id, host_id: membership.id)
                       retreat_host.save 
                    end
-                   puts "Team: " + team.name.to_s
+                 rescue => ex 
+                  puts "Error Saving Host"
+                  puts ex.message
+                 end 
+
+
+                   begin
                     ##Save Event Planner
                    puts "Checking User for Planner"
                    if val['FHEventCoordinator'].present?
@@ -214,18 +223,23 @@ module Circuitree
  
                   puts "Checking Membership for Planner"
 
-                     membership = Membership.find_or_create_by!(team_id: team.id, user_id: user.id)
-                      if membership.new_record?
-                        puts "Creating Membership"
-                        membership.user_email = "#{first}.#{last}@foresthome.org"
-                        membership.user_first_name = first
-                        membership.user_last_name = last
-                        membership.save!
-                      end
+                   membership = Membership.find_or_initialize_by(team_id: team.id, user_id: user.id) do |new_membership|
+                      puts "Creating Membership"
+                      new_membership.user_email = "#{first}.#{last}@foresthome.org"
+                      new_membership.user_first_name = first
+                      new_membership.user_last_name = last
+                    end
+
+                    membership.save!
+
 
                       retreat_planner = Retreats::PlannerTag.find_or_create_by!(retreat_id: retreat.id, planner_id: membership.id)
                       retreat_planner.save 
                    end
+                 rescue => ex 
+                  puts "Error saving Event Planner.."
+                  puts ex.message 
+                 end 
 
 
                    ##Save Location

@@ -56,5 +56,9 @@ class Retreat < ApplicationRecord
     team.organizations_contacts
   end
 
+    def valid_memberships
+    team.memberships.current_and_invited
+  end
+
   # 🚅 add methods above.
 end
