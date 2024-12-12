@@ -40,7 +40,11 @@ shallow do
           resources :options, only: collection_actions, concerns: [:sortable]
         end
       end
-      resources :retreats
+      resources :retreats do
+        scope module: 'retreats' do
+          resources :comments, only: collection_actions
+        end
+      end
       resources :reservations
       namespace :items do
         resources :tags
@@ -51,6 +55,14 @@ shallow do
       namespace :flights do
         resources :timeframes, concerns: [:sortable]
         resources :checks
+      end
+
+      namespace :organizations do
+        resources :contacts
+      end
+
+      namespace :retreats do
+        resources :comments, except: collection_actions
       end
     end
   end

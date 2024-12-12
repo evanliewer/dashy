@@ -1,5 +1,7 @@
 default:
   models:
+    Retreats::Comment: read
+    Organizations::Contact: read
     Items::Option: read
     Flights::Check: read
     Flights::Timeframe: read
@@ -40,6 +42,8 @@ admin:
     - admin
     - editor
   models:
+    Retreats::Comment: manage
+    Organizations::Contact: manage
     Items::Option: manage
     Flights::Check: manage
     Flights::Timeframe: manage

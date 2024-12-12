@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_12_12_061247) do
+ActiveRecord::Schema[7.2].define(version: 2024_12_12_062820) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -323,6 +323,18 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_12_061247) do
     t.index ["team_id"], name: "index_organizations_on_team_id"
   end
 
+  create_table "organizations_contacts", force: :cascade do |t|
+    t.bigint "team_id", null: false
+    t.string "first_name"
+    t.string "last_name"
+    t.string "job_title"
+    t.string "primary_phone"
+    t.string "email"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["team_id"], name: "index_organizations_contacts_on_team_id"
+  end
+
   create_table "reservations", force: :cascade do |t|
     t.bigint "team_id", null: false
     t.string "name"
@@ -363,6 +375,25 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_12_061247) do
     t.datetime "updated_at", null: false
     t.index ["organization_id"], name: "index_retreats_on_organization_id"
     t.index ["team_id"], name: "index_retreats_on_team_id"
+  end
+
+  create_table "retreats_assigned_contacts", force: :cascade do |t|
+    t.bigint "retreat_id", null: false
+    t.bigint "contact_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["contact_id"], name: "index_retreats_assigned_contacts_on_contact_id"
+    t.index ["retreat_id"], name: "index_retreats_assigned_contacts_on_retreat_id"
+  end
+
+  create_table "retreats_comments", force: :cascade do |t|
+    t.bigint "retreat_id", null: false
+    t.string "name"
+    t.bigint "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["retreat_id"], name: "index_retreats_comments_on_retreat_id"
+    t.index ["user_id"], name: "index_retreats_comments_on_user_id"
   end
 
   create_table "retreats_demographic_tags", force: :cascade do |t|
@@ -593,12 +624,17 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_12_061247) do
   add_foreign_key "oauth_applications", "teams"
   add_foreign_key "oauth_stripe_accounts", "users"
   add_foreign_key "organizations", "teams"
+  add_foreign_key "organizations_contacts", "teams"
   add_foreign_key "reservations", "items"
   add_foreign_key "reservations", "memberships", column: "user_id"
   add_foreign_key "reservations", "retreats"
   add_foreign_key "reservations", "teams"
   add_foreign_key "retreats", "organizations"
   add_foreign_key "retreats", "teams"
+  add_foreign_key "retreats_assigned_contacts", "organizations_contacts", column: "contact_id"
+  add_foreign_key "retreats_assigned_contacts", "retreats"
+  add_foreign_key "retreats_comments", "memberships", column: "user_id"
+  add_foreign_key "retreats_comments", "retreats"
   add_foreign_key "retreats_demographic_tags", "demographics"
   add_foreign_key "retreats_demographic_tags", "retreats"
   add_foreign_key "retreats_host_tags", "memberships", column: "host_id"

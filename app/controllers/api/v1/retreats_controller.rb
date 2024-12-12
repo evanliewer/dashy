@@ -62,6 +62,7 @@ if defined?(Api::V1::ApplicationController)
           demographic_ids: [],
           planner_ids: [],
           host_ids: [],
+          contact_ids: [],
           # 🚅 super scaffolding will insert new arrays above this line.
         )
 
