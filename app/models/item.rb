@@ -11,6 +11,7 @@ class Item < ApplicationRecord
 
   has_many :applied_tags, class_name: "Items::AppliedTag", dependent: :destroy
   has_many :tags, through: :applied_tags, class_name: "Items::Tag"
+  has_many :options, class_name: "Items::Option", dependent: :destroy
   # 🚅 add has_many associations above.
 
   has_one_attached :image_tag

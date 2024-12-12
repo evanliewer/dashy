@@ -71,16 +71,22 @@ Rails.application.routes.draw do
         resources :departments, concerns: [:sortable]
         resources :locations, concerns: [:sortable]
         resources :organizations
-        resources :items
+        resources :items do
+          scope module: 'items' do
+            resources :options, only: collection_actions, concerns: [:sortable]
+          end
+        end
         resources :retreats
         resources :reservations
         namespace :items do
           resources :tags
+          resources :options, except: collection_actions, concerns: [:sortable]
         end
 
         resources :flights, concerns: [:sortable]
         namespace :flights do
           resources :timeframes, concerns: [:sortable]
+          resources :checks
         end
       end
     end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_12_12_045918) do
+ActiveRecord::Schema[7.2].define(version: 2024_12_12_061247) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -103,6 +103,15 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_12_045918) do
     t.index ["team_id"], name: "index_departments_on_team_id"
   end
 
+  create_table "departments_applied_tags", force: :cascade do |t|
+    t.bigint "department_id", null: false
+    t.bigint "tag_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["department_id"], name: "index_departments_applied_tags_on_department_id"
+    t.index ["tag_id"], name: "index_departments_applied_tags_on_tag_id"
+  end
+
   create_table "flights", force: :cascade do |t|
     t.bigint "team_id", null: false
     t.integer "sort_order"
@@ -116,6 +125,21 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_12_045918) do
     t.bigint "flights_timeframe_id"
     t.index ["flights_timeframe_id"], name: "index_flights_on_flights_timeframe_id"
     t.index ["team_id"], name: "index_flights_on_team_id"
+  end
+
+  create_table "flights_checks", force: :cascade do |t|
+    t.bigint "team_id", null: false
+    t.string "name"
+    t.bigint "retreat_id"
+    t.bigint "flight_id"
+    t.bigint "user_id"
+    t.datetime "completed_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["flight_id"], name: "index_flights_checks_on_flight_id"
+    t.index ["retreat_id"], name: "index_flights_checks_on_retreat_id"
+    t.index ["team_id"], name: "index_flights_checks_on_team_id"
+    t.index ["user_id"], name: "index_flights_checks_on_user_id"
   end
 
   create_table "flights_timeframes", force: :cascade do |t|
@@ -172,6 +196,17 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_12_045918) do
     t.datetime "updated_at", null: false
     t.index ["item_id"], name: "index_items_applied_tags_on_item_id"
     t.index ["tag_id"], name: "index_items_applied_tags_on_tag_id"
+  end
+
+  create_table "items_options", force: :cascade do |t|
+    t.bigint "item_id", null: false
+    t.integer "sort_order"
+    t.string "name"
+    t.integer "capacity"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "description"
+    t.index ["item_id"], name: "index_items_options_on_item_id"
   end
 
   create_table "items_tags", force: :cascade do |t|
@@ -528,8 +563,14 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_12_045918) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "demographics", "teams"
   add_foreign_key "departments", "teams"
+  add_foreign_key "departments_applied_tags", "departments"
+  add_foreign_key "departments_applied_tags", "items_tags", column: "tag_id"
   add_foreign_key "flights", "flights_timeframes"
   add_foreign_key "flights", "teams"
+  add_foreign_key "flights_checks", "flights"
+  add_foreign_key "flights_checks", "memberships", column: "user_id"
+  add_foreign_key "flights_checks", "retreats"
+  add_foreign_key "flights_checks", "teams"
   add_foreign_key "flights_timeframes", "teams"
   add_foreign_key "integrations_stripe_installations", "oauth_stripe_accounts"
   add_foreign_key "integrations_stripe_installations", "teams"
@@ -539,6 +580,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_12_045918) do
   add_foreign_key "items", "teams"
   add_foreign_key "items_applied_tags", "items"
   add_foreign_key "items_applied_tags", "items_tags", column: "tag_id"
+  add_foreign_key "items_options", "items"
   add_foreign_key "items_tags", "teams"
   add_foreign_key "locations", "teams"
   add_foreign_key "memberships", "invitations"
