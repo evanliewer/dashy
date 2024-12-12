@@ -18,10 +18,24 @@ Rails.application.routes.draw do
   scope module: "public" do
     # To keep things organized, we put non-authenticated controllers in the `Public::` namespace.
     # The root `/` path is routed to `Public::HomeController#index` by default.
+    get 'public_reservation' => 'home#public_reservation', as: 'public_reservation'
+    post 'new_public_reservation' => 'home#new_public_reservation', as: 'new_public_reservation'
+    patch 'new_public_reservation' => 'home#new_public_reservation', as: 'edit_public_reservation'
+    get 'destroy_reservation' => 'home#destroy_reservation', as: 'destroy_reservation' 
+    get '/game_show/:color' => 'home#game_show', as: 'game_show'
+    get '/waiver/:retreat' => 'home#waiver', as: 'waiver'
+    post 'waiver/create_public_waiver', to: 'home#create_public_waiver', as: 'create_public_waiver'
+    get 'thank_you' => 'home#thank_you', as: 'thank_you'
+    # Standalone routes for public medform actions
+  #get 'medform/new', to: 'medform#new_public', as: :new_public_medform
+
+
   end
 
   namespace :webhooks do
     namespace :incoming do
+      resources :camp_dashboard_webhooks
+      resources :jotform_webhooks
       namespace :oauth do
         # 🚅 super scaffolding will insert new oauth provider webhooks above this line.
       end
@@ -67,18 +81,34 @@ Rails.application.routes.draw do
           # 🚅 super scaffolding will insert new integration installations above this line.
         end
 
+        put 'toggle_flightcheck', to: 'flights#toggle_flightcheck', as: :toggle_flightcheck
+        get 'create_seasonal_reservations' => 'reservations#create_seasonal_reservations', as: 'create_seasonal_reservations'
+        get 'remove_seasonal_reservations' => 'reservations#remove_seasonal_reservations', as: 'remove_seasonal_reservations'
+        patch 'fullcalendar_update/', to: 'reservations#fullcalendar_update', as: :fullcalendar_update
+        patch '/account/:team_id/fullcalendar_update', to: 'account/teams#update_fullcalendar_event', as: 'account_team_fullcalendar_update'
+        get 'print_retreat' => 'retreats#print', as: 'print_retreat'
+        get 'print_gold' => 'retreats#gold', as: 'print_gold'
+        get '/lodging' => 'items#lodging', as: 'lodging'
+        get 'schedule_json' => 'reservations#schedule_json', as: 'schedule_json'
+        get 'calendar_json' => 'reservations#calendar_json', as: 'calendar_json'
+        get 'mark_notification_read' => 'notifications#mark_notification_read', as: 'mark_notification_read'
+
         resources :demographics, concerns: [:sortable]
         resources :departments, concerns: [:sortable]
         resources :locations, concerns: [:sortable]
-        resources :organizations
         resources :items do
           scope module: 'items' do
             resources :options, only: collection_actions, concerns: [:sortable]
           end
         end
+        resources :organizations
         resources :retreats do
           scope module: 'retreats' do
             resources :comments, only: collection_actions
+          end
+          member do
+            get :department_view
+            get :kitchen
           end
         end
         resources :reservations
@@ -107,14 +137,19 @@ Rails.application.routes.draw do
         namespace :notifications do
           resources :flags
           resources :requests
+          resources :archive_actions do
+            member do
+              post 'approve'
+            end
+          end
         end
 
+        resources :seasons
         resources :questions, concerns: [:sortable]
         resources :websiteimages
-        resources :diets, concerns: [:sortable]
-        resources :medforms
         resources :games
-        resources :seasons
+        resources :medforms
+        resources :diets, concerns: [:sortable]
       end
     end
   end

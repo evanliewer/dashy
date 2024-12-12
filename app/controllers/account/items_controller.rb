@@ -1,15 +1,32 @@
 class Account::ItemsController < Account::ApplicationController
   account_load_and_authorize_resource :item, through: :team, through_association: :items
 
+
   # GET /account/teams/:team_id/items
   # GET /account/teams/:team_id/items.json
   def index
+    if params[:tag].present?
+      @items = Item.joins(:tags).where(tags: { name: params[:tag] })
+    else 
+      @items = Item.where.not(id: Item.joins(:tags).where("tags.name ILIKE ?", "%Amenity%").where(tags: { name: ['Lodging','Meeting Spaces'] }).select(:id))  
+    end
+
     delegate_json_to_api
   end
 
   # GET /account/items/:id
   # GET /account/items/:id.json
   def show
+    @previous_reservations = Reservation
+                            .where(item_id: @item.id)
+                            .where("start_time < ?", Time.zone.now)
+                            .order(start_time: :desc)
+                            .limit(5)
+    @next_reservations = Reservation
+                        .where(item_id: @item.id)
+                        .where("start_time >= ?", Time.zone.now)
+                        .order(start_time: :asc)
+                        .limit(5)
     delegate_json_to_api
   end
 
@@ -40,8 +57,13 @@ class Account::ItemsController < Account::ApplicationController
   def update
     respond_to do |format|
       if @item.update(item_params)
-        format.html { redirect_to [:account, @item], notice: I18n.t("items.notifications.updated") }
-        format.json { render :show, status: :ok, location: [:account, @item] }
+        if @item.active
+          format.html { redirect_to [:account, @item], notice: I18n.t("items.notifications.updated") }
+          format.json { render :show, status: :ok, location: [:account, @item] }
+        else
+          format.html { redirect_to [:account, @team, :items], notice: I18n.t("items.notifications.updated") }
+          format.json { render :show, status: :ok, location: [:account, @team, :items] }
+        end
       else
         format.html { render :edit, status: :unprocessable_entity }
         format.json { render json: @item.errors, status: :unprocessable_entity }
@@ -57,6 +79,31 @@ class Account::ItemsController < Account::ApplicationController
       format.html { redirect_to [:account, @team, :items], notice: I18n.t("items.notifications.destroyed") }
       format.json { head :no_content }
     end
+  end
+
+
+  def lodging
+    @team = current_team
+    @item = Item.last
+   # @cabins = Item.joins(:tags).where(tags: { name: 'Lodging' }).pluck(:id)
+   # cabin_ids = @cabins.pluck(:id)
+    
+
+      #Reservations for unique lodging items
+    @reservations = Reservation
+      .where(item_id: Item.joins(:tags).where(tags: { name: 'Lodging' }).pluck(:id))  # Filter by all item IDs
+      .where('end_time > ?', Time.zone.now)  # Ensure end_time is in the future
+      .select('DISTINCT ON (item_id) *')  # Ensure only one reservation per item
+      .order('item_id, start_time ASC')  # First order by item_id, then by start_time
+
+
+  #Only Open
+    @reservations = Reservation
+      .where(item_id: Item.joins(:tags).where(tags: { name: 'Lodging' }).pluck(:id))  # Filter by all item IDs
+      .where('end_time > ?', Time.zone.now) 
+      .where.not('? BETWEEN start_time AND end_time', Time.zone.now)
+      .select('DISTINCT ON (item_id) *')  # Ensure only one reservation per item
+      .order('item_id, start_time ASC')  # First order by item_id, then by start_time
   end
 
   private
