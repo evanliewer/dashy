@@ -76,6 +76,7 @@ shallow do
       resources :questions, concerns: [:sortable]
       resources :websiteimages
       resources :diets, concerns: [:sortable]
+      resources :medforms
     end
   end
 end

@@ -176,7 +176,7 @@ rails g super_scaffold Diet Team name:text_field --sortable
     t.string "age"
 -
 
-rails g super_scaffold Medform name:text_field retreat_id:super_select{class_name=Retreat} phone:text_field email:text_field gender:text_field address:address_field emergency_contact_name:text_field emergency_contact_phone:text_field emergency_contact_relationship:text_field terms:boolean form_for:text_field age:text_field diet_id:super_select{class_name=Diet}
+rails g super_scaffold Medform Team name:text_field retreat_id:super_select{class_name=Retreat} phone:text_field email:text_field gender:text_field address:address_field emergency_contact_name:text_field emergency_contact_phone:text_field emergency_contact_relationship:text_field terms:boolean form_for:text_field age:text_field diet_id:super_select{class_name=Diet}
 
 rails generate super_scaffold:audit_logs Location Team name:text_field capacity:number_field
 

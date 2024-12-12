@@ -1,5 +1,6 @@
 default:
   models:
+    Medform: read
     Diet: read
     Items::Area: read
     Retreats::Request: read
@@ -50,6 +51,7 @@ admin:
     - admin
     - editor
   models:
+    Medform: manage
     Diet: manage
     Items::Area: manage
     Retreats::Request: manage

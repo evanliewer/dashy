@@ -44,6 +44,7 @@ components:
     <%= automatic_components_for Retreats::Request %>
     <%= automatic_components_for Items::Area %>
     <%= automatic_components_for Diet %>
+    <%= automatic_components_for Medform %>
     <%# 🚅 super scaffolding will insert new components above this line. %>
   parameters:
     id:
@@ -100,4 +101,5 @@ paths:
   <%= automatic_paths_for Retreats::Request, Team %>
   <%= automatic_paths_for Items::Area, Team %>
   <%= automatic_paths_for Diet, Team %>
+  <%= automatic_paths_for Medform, Team %>
   <%# 🚅 super scaffolding will insert new paths above this line. %>
