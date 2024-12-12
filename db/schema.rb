@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_12_12_034058) do
+ActiveRecord::Schema[7.2].define(version: 2024_12_12_035311) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -141,6 +141,29 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_12_034058) do
     t.index ["team_id"], name: "index_items_on_team_id"
   end
 
+  create_table "items_applied_tags", force: :cascade do |t|
+    t.bigint "item_id", null: false
+    t.bigint "tag_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["item_id"], name: "index_items_applied_tags_on_item_id"
+    t.index ["tag_id"], name: "index_items_applied_tags_on_tag_id"
+  end
+
+  create_table "items_tags", force: :cascade do |t|
+    t.bigint "team_id", null: false
+    t.string "name"
+    t.boolean "ticketable", default: false
+    t.boolean "schedulable", default: false
+    t.boolean "optionable", default: false
+    t.boolean "exclusivable", default: false
+    t.boolean "cleanable", default: false
+    t.boolean "publicable", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["team_id"], name: "index_items_tags_on_team_id"
+  end
+
   create_table "locations", force: :cascade do |t|
     t.bigint "team_id", null: false
     t.integer "sort_order"
@@ -241,6 +264,28 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_12_034058) do
     t.index ["team_id"], name: "index_organizations_on_team_id"
   end
 
+  create_table "reservations", force: :cascade do |t|
+    t.bigint "team_id", null: false
+    t.string "name"
+    t.bigint "retreat_id"
+    t.bigint "item_id"
+    t.bigint "user_id"
+    t.datetime "start_time"
+    t.datetime "end_time"
+    t.integer "quantity"
+    t.string "notes"
+    t.boolean "seasonal_default", default: false
+    t.boolean "exclusive", default: false
+    t.boolean "active", default: false
+    t.string "dining_style"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["item_id"], name: "index_reservations_on_item_id"
+    t.index ["retreat_id"], name: "index_reservations_on_retreat_id"
+    t.index ["team_id"], name: "index_reservations_on_team_id"
+    t.index ["user_id"], name: "index_reservations_on_user_id"
+  end
+
   create_table "retreats", force: :cascade do |t|
     t.bigint "team_id", null: false
     t.string "name"
@@ -270,6 +315,15 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_12_034058) do
     t.index ["retreat_id"], name: "index_retreats_demographic_tags_on_retreat_id"
   end
 
+  create_table "retreats_host_tags", force: :cascade do |t|
+    t.bigint "retreat_id", null: false
+    t.bigint "host_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["host_id"], name: "index_retreats_host_tags_on_host_id"
+    t.index ["retreat_id"], name: "index_retreats_host_tags_on_retreat_id"
+  end
+
   create_table "retreats_location_tags", force: :cascade do |t|
     t.bigint "retreat_id", null: false
     t.bigint "location_id", null: false
@@ -277,6 +331,15 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_12_034058) do
     t.datetime "updated_at", null: false
     t.index ["location_id"], name: "index_retreats_location_tags_on_location_id"
     t.index ["retreat_id"], name: "index_retreats_location_tags_on_retreat_id"
+  end
+
+  create_table "retreats_planner_tags", force: :cascade do |t|
+    t.bigint "retreat_id", null: false
+    t.bigint "planner_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["planner_id"], name: "index_retreats_planner_tags_on_planner_id"
+    t.index ["retreat_id"], name: "index_retreats_planner_tags_on_retreat_id"
   end
 
   create_table "scaffolding_absolutely_abstract_creative_concepts", force: :cascade do |t|
@@ -447,6 +510,9 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_12_034058) do
   add_foreign_key "invitations", "teams"
   add_foreign_key "items", "locations"
   add_foreign_key "items", "teams"
+  add_foreign_key "items_applied_tags", "items"
+  add_foreign_key "items_applied_tags", "items_tags", column: "tag_id"
+  add_foreign_key "items_tags", "teams"
   add_foreign_key "locations", "teams"
   add_foreign_key "memberships", "invitations"
   add_foreign_key "memberships", "memberships", column: "added_by_id"
@@ -458,12 +524,20 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_12_034058) do
   add_foreign_key "oauth_applications", "teams"
   add_foreign_key "oauth_stripe_accounts", "users"
   add_foreign_key "organizations", "teams"
+  add_foreign_key "reservations", "items"
+  add_foreign_key "reservations", "memberships", column: "user_id"
+  add_foreign_key "reservations", "retreats"
+  add_foreign_key "reservations", "teams"
   add_foreign_key "retreats", "organizations"
   add_foreign_key "retreats", "teams"
   add_foreign_key "retreats_demographic_tags", "demographics"
   add_foreign_key "retreats_demographic_tags", "retreats"
+  add_foreign_key "retreats_host_tags", "memberships", column: "host_id"
+  add_foreign_key "retreats_host_tags", "retreats"
   add_foreign_key "retreats_location_tags", "locations"
   add_foreign_key "retreats_location_tags", "retreats"
+  add_foreign_key "retreats_planner_tags", "memberships", column: "planner_id"
+  add_foreign_key "retreats_planner_tags", "retreats"
   add_foreign_key "scaffolding_absolutely_abstract_creative_concepts", "teams"
   add_foreign_key "scaffolding_completely_concrete_tangible_things", "scaffolding_absolutely_abstract_creative_concepts", column: "absolutely_abstract_creative_concept_id"
   add_foreign_key "scaffolding_completely_concrete_tangible_things_assignments", "memberships"

@@ -16,6 +16,8 @@
       <%= render 'shared/fields/number_field', method: :flip_time %>
       <%= render 'shared/fields/number_field', method: :beds %>
       <%= render 'shared/fields/file_field', method: :layout %>
+      <%= render 'shared/fields/super_select', method: :tag_ids, html_options: {multiple: true},
+        choices: @item.valid_tags.map { |tag| [tag.label_string, tag.id] } %>
       <%# 🚅 super scaffolding will insert new fields above this line. %>
     <% end %>
 

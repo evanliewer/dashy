@@ -1,5 +1,7 @@
 default:
   models:
+    Items::Tag: read
+    Reservation: read
     Retreat: read
     Item: read
     Organization: read
@@ -34,6 +36,8 @@ admin:
     - admin
     - editor
   models:
+    Items::Tag: manage
+    Reservation: manage
     Retreat: manage
     Item: manage
     Organization: manage

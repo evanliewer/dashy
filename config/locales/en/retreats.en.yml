@@ -121,6 +121,22 @@ en:
         api_description: *demographic_ids
         placeholder: None
       demographics: *demographics
+      planner_ids: &planners
+        _: &planner_ids Planners
+        label: *planner_ids
+        heading: *planner_ids
+        api_title: *planner_ids
+        api_description: *planner_ids
+        placeholder: None
+      planners: *planners
+      host_ids: &hosts
+        _: &host_ids Hosts
+        label: *host_ids
+        heading: *host_ids
+        api_title: *host_ids
+        api_description: *host_ids
+        placeholder: None
+      hosts: *hosts
       # 🚅 super scaffolding will insert new fields above this line.
       created_at:
         _: &created_at Added
@@ -190,6 +206,8 @@ en:
         dining_style: *dining_style
         location_ids: *location_ids
         demographic_ids: *demographic_ids
+        planner_ids: *planner_ids
+        host_ids: *host_ids
         # 🚅 super scaffolding will insert new activerecord attributes above this line.
         created_at: *created_at
         updated_at: *updated_at

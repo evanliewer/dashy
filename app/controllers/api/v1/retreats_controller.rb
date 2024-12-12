@@ -60,6 +60,8 @@ if defined?(Api::V1::ApplicationController)
           *permitted_arrays,
           location_ids: [],
           demographic_ids: [],
+          planner_ids: [],
+          host_ids: [],
           # 🚅 super scaffolding will insert new arrays above this line.
         )
 

@@ -9,6 +9,8 @@ class Item < ApplicationRecord
   belongs_to :location, optional: true
   # 🚅 add belongs_to associations above.
 
+  has_many :applied_tags, class_name: "Items::AppliedTag", dependent: :destroy
+  has_many :tags, through: :applied_tags, class_name: "Items::Tag"
   # 🚅 add has_many associations above.
 
   has_one_attached :image_tag
@@ -45,6 +47,10 @@ class Item < ApplicationRecord
 
   def remove_layout
     layout.purge
+  end
+
+  def valid_tags
+    team.items_tags.order(:name)
   end
 
   # 🚅 add methods above.
