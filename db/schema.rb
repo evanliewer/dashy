@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_12_12_062820) do
+ActiveRecord::Schema[7.2].define(version: 2024_12_12_063511) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -255,6 +255,28 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_12_062820) do
     t.index ["platform_agent_of_id"], name: "index_memberships_on_platform_agent_of_id"
     t.index ["team_id"], name: "index_memberships_on_team_id"
     t.index ["user_id"], name: "index_memberships_on_user_id"
+  end
+
+  create_table "notifications", force: :cascade do |t|
+    t.bigint "team_id", null: false
+    t.string "name"
+    t.bigint "user_id"
+    t.datetime "read_at"
+    t.boolean "emailed", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["team_id"], name: "index_notifications_on_team_id"
+    t.index ["user_id"], name: "index_notifications_on_user_id"
+  end
+
+  create_table "notifications_flags", force: :cascade do |t|
+    t.bigint "team_id", null: false
+    t.string "name"
+    t.bigint "department_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["department_id"], name: "index_notifications_flags_on_department_id"
+    t.index ["team_id"], name: "index_notifications_flags_on_team_id"
   end
 
   create_table "oauth_access_grants", force: :cascade do |t|
@@ -619,6 +641,10 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_12_062820) do
   add_foreign_key "memberships", "oauth_applications", column: "platform_agent_of_id"
   add_foreign_key "memberships", "teams"
   add_foreign_key "memberships", "users"
+  add_foreign_key "notifications", "memberships", column: "user_id"
+  add_foreign_key "notifications", "teams"
+  add_foreign_key "notifications_flags", "departments"
+  add_foreign_key "notifications_flags", "teams"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_applications", "teams"

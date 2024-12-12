@@ -100,6 +100,12 @@ Rails.application.routes.draw do
         namespace :retreats do
           resources :comments, except: collection_actions
         end
+
+        resources :notifications
+        namespace :notifications do
+          resources :flags
+          resources :requests
+        end
       end
     end
   end
