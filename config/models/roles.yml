@@ -1,5 +1,7 @@
 default:
   models:
+    Websiteimage: read
+    Question: read
     Notifications::Request: read
     Notifications::Flag: read
     Notification: read
@@ -45,6 +47,8 @@ admin:
     - admin
     - editor
   models:
+    Websiteimage: manage
+    Question: manage
     Notifications::Request: manage
     Notifications::Flag: manage
     Notification: manage

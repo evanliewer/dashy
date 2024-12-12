@@ -1,18 +1,15 @@
-class Demographic < ApplicationRecord
-  include Sortable
+class Websiteimage < ApplicationRecord
   # 🚅 add concerns above.
 
+  attr_accessor :image_removal
   # 🚅 add attribute accessors above.
 
   belongs_to :team
   # 🚅 add belongs_to associations above.
 
-  has_many :retreats_demographic_tags, class_name: "Retreats::DemographicTag", dependent: :destroy
-  has_many :retreats, through: :retreats_demographic_tags
-  has_many :questions_demographic_tags, class_name: "Questions::DemographicTag", dependent: :destroy
-  has_many :questions, through: :questions_demographic_tags
   # 🚅 add has_many associations above.
 
+  has_one_attached :image
   # 🚅 add has_one associations above.
 
   # 🚅 add scopes above.
@@ -20,12 +17,17 @@ class Demographic < ApplicationRecord
   validates :name, presence: true
   # 🚅 add validations above.
 
+  after_validation :remove_image, if: :image_removal?
   # 🚅 add callbacks above.
 
   # 🚅 add delegations above.
 
-  def collection
-    team.demographics
+  def image_removal?
+    image_removal.present?
+  end
+
+  def remove_image
+    image.purge
   end
 
   # 🚅 add methods above.

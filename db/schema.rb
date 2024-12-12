@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_12_12_063511) do
+ActiveRecord::Schema[7.2].define(version: 2024_12_12_154416) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -279,6 +279,20 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_12_063511) do
     t.index ["team_id"], name: "index_notifications_flags_on_team_id"
   end
 
+  create_table "notifications_requests", force: :cascade do |t|
+    t.bigint "team_id", null: false
+    t.string "name"
+    t.bigint "user_id"
+    t.bigint "notifications_flag_id"
+    t.integer "days_before"
+    t.boolean "email", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["notifications_flag_id"], name: "index_notifications_requests_on_notifications_flag_id"
+    t.index ["team_id"], name: "index_notifications_requests_on_team_id"
+    t.index ["user_id"], name: "index_notifications_requests_on_user_id"
+  end
+
   create_table "oauth_access_grants", force: :cascade do |t|
     t.bigint "resource_owner_id", null: false
     t.bigint "application_id", null: false
@@ -355,6 +369,34 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_12_063511) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["team_id"], name: "index_organizations_contacts_on_team_id"
+  end
+
+  create_table "questions", force: :cascade do |t|
+    t.bigint "team_id", null: false
+    t.integer "sort_order"
+    t.string "name"
+    t.string "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["team_id"], name: "index_questions_on_team_id"
+  end
+
+  create_table "questions_demographic_tags", force: :cascade do |t|
+    t.bigint "question_id", null: false
+    t.bigint "demographic_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["demographic_id"], name: "index_questions_demographic_tags_on_demographic_id"
+    t.index ["question_id"], name: "index_questions_demographic_tags_on_question_id"
+  end
+
+  create_table "questions_location_tags", force: :cascade do |t|
+    t.bigint "question_id", null: false
+    t.bigint "location_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["location_id"], name: "index_questions_location_tags_on_location_id"
+    t.index ["question_id"], name: "index_questions_location_tags_on_question_id"
   end
 
   create_table "reservations", force: :cascade do |t|
@@ -611,6 +653,15 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_12_063511) do
     t.index ["team_id"], name: "index_webhooks_outgoing_events_on_team_id"
   end
 
+  create_table "websiteimages", force: :cascade do |t|
+    t.bigint "team_id", null: false
+    t.string "name"
+    t.string "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["team_id"], name: "index_websiteimages_on_team_id"
+  end
+
   add_foreign_key "account_onboarding_invitation_lists", "teams"
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
@@ -645,12 +696,20 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_12_063511) do
   add_foreign_key "notifications", "teams"
   add_foreign_key "notifications_flags", "departments"
   add_foreign_key "notifications_flags", "teams"
+  add_foreign_key "notifications_requests", "memberships", column: "user_id"
+  add_foreign_key "notifications_requests", "notifications_flags"
+  add_foreign_key "notifications_requests", "teams"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_applications", "teams"
   add_foreign_key "oauth_stripe_accounts", "users"
   add_foreign_key "organizations", "teams"
   add_foreign_key "organizations_contacts", "teams"
+  add_foreign_key "questions", "teams"
+  add_foreign_key "questions_demographic_tags", "demographics"
+  add_foreign_key "questions_demographic_tags", "questions"
+  add_foreign_key "questions_location_tags", "locations"
+  add_foreign_key "questions_location_tags", "questions"
   add_foreign_key "reservations", "items"
   add_foreign_key "reservations", "memberships", column: "user_id"
   add_foreign_key "reservations", "retreats"
@@ -677,4 +736,5 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_12_063511) do
   add_foreign_key "webhooks_outgoing_endpoints", "scaffolding_absolutely_abstract_creative_concepts"
   add_foreign_key "webhooks_outgoing_endpoints", "teams"
   add_foreign_key "webhooks_outgoing_events", "teams"
+  add_foreign_key "websiteimages", "teams"
 end

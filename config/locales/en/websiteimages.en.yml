@@ -1,0 +1,106 @@
+en:
+  websiteimages: &websiteimages
+    label: &label Websiteimages
+    breadcrumbs:
+      label: *label
+    navigation:
+      label: *label
+      icon: fal fa-solid fa-images
+    buttons: &buttons
+      new: Add New Websiteimage
+      create: Create Websiteimage
+      edit: Edit Websiteimage
+      update: Update Websiteimage
+      destroy: Remove Websiteimage
+      shorthand:
+        edit: Edit
+        destroy: Delete
+      confirmations:
+        # TODO customize for your use-case.
+        destroy: Are you sure you want to remove %{websiteimage_name}? This will also remove any child resources and can't be undone.
+    websiteimage:
+      buttons: *buttons
+    fields: &fields
+      id:
+        heading: Websiteimage ID
+      team_id:
+        heading: Team ID
+      name:
+        _: &name Name
+        label: *name
+        heading: *name
+        api_title: *name
+        api_description: *name
+      description:
+        _: &description Description
+        label: *description
+        heading: *description
+        api_title: *description
+        api_description: *description
+      image:
+        _: &image Image
+        label: *image
+        heading: *image
+        api_title: *image
+        api_description: *image
+      # 🚅 super scaffolding will insert new fields above this line.
+      created_at:
+        _: &created_at Added
+        label: *created_at
+        heading: *created_at
+      updated_at:
+        _: &updated_at Updated
+        label: *updated_at
+        heading: *updated_at
+    api:
+      collection_actions: "Collection Actions for Websiteimages"
+      index: "List Websiteimages"
+      create: "Add a New Websiteimage"
+      member_actions: "Actions for an Individual Websiteimage"
+      show: "Retrieve a Websiteimage"
+      update: "Update a Websiteimage"
+      destroy: "Delete a Websiteimage"
+      fields: *fields
+    index:
+      section: "%{teams_possessive} Websiteimages"
+      contexts:
+        team:
+          header: Websiteimages
+          description: Below is a list of Websiteimages that have been added for %{team_name}.
+          description_empty: No Websiteimages have been added for %{team_name}.
+      fields: *fields
+      buttons: *buttons
+    show:
+      section: "%{websiteimage_name}"
+      header: Websiteimage Details
+      description: Below are the details we have for %{websiteimage_name}.
+      manage_description: You'll also find options for updating these details or removing %{websiteimage_name} from %{team_name} entirely.
+      fields: *fields
+      buttons: *buttons
+    form: &form
+      buttons: *buttons
+      fields: *fields
+    new:
+      section: "New Websiteimage for %{team_name}"
+      header: New Websiteimage Details
+      description: Please provide the details of the new Websiteimage you'd like to add to %{team_name}.
+      form: *form
+    edit:
+      section: "%{websiteimage_name}"
+      header: Edit Websiteimage Details
+      description: You can update the details or settings for %{websiteimage_name} below.
+      form: *form
+    notifications:
+      created: Websiteimage was successfully created.
+      updated: Websiteimage was successfully updated.
+      destroyed: Websiteimage was successfully destroyed.
+  account:
+    websiteimages: *websiteimages
+  activerecord:
+    attributes:
+      websiteimage:
+        name: *name
+        image: *image
+        # 🚅 super scaffolding will insert new activerecord attributes above this line.
+        created_at: *created_at
+        updated_at: *updated_at

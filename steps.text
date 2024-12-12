@@ -33,6 +33,8 @@ rails g super_scaffold Organization Team name:text_field address:address_field w
 rails g super_scaffold Item Team name:text_field description:text_field location_id:super_select{class_name=Location} active:boolean overlap_offset:number_field image_tag:image clean:boolean flip_time:number_field beds:number_field layout:file_field
 rails g super_scaffold Retreat Team name:text_field description:text_field arrival:date_and_time_field departure:date_and_time_field contract_count:number_field organization_id:super_select{class_name:Organization} internal:boolean active:boolean actual_count:number_field nps:number_field debrief:text_field dining_style:text_field
 
+(updated count to be contract)
+
 rails g super_scaffold:join_model Retreats::LocationTag retreat_id{class_name=Retreat} location_id{class_name=Location}
 rails g super_scaffold:field Retreat location_ids:super_select{class_name=Location}
 
@@ -45,7 +47,7 @@ rails g super_scaffold:field Retreat planner_ids:super_select{class_name=Members
 rails g super_scaffold:join_model Retreats::HostTag retreat_id{class_name=Retreat} host_id{class_name=Membership}
 rails g super_scaffold:field Retreat host_ids:super_select{class_name=Membership}
 
-rails g super_scaffold Reservation Team name:text_field retreat_id:super_select{class_name=Retreat} item_id:super_select{class_name=Item} user_id:super_select{class_name=Membership} start_time:date_and_time_field end_time:date_and_time_field quantity:number_field notes:text_field seasonal_default:boolean exclusive:boolean active:boolean 
+rails g super_scaffold Reservation Team name:text_field retreat_id:super_select{class_name=Retreat} item_id:super_select{class_name=Item} user_id:super_select{class_name=Membership} start_time:date_and_time_field end_time:date_and_time_field quantity:number_field notes:text_field seasonal_default:boolean exclusive:boolean active:boolean dining_style:text_field
 
 
 rails g super_scaffold Items::Tag Team name:text_field ticketable:boolean schedulable:boolean optionable:boolean exclusivable:boolean cleanable:boolean publicable:boolean
@@ -55,15 +57,19 @@ rails g super_scaffold:field Item tag_ids:super_select{class_name=Items::Tag}
 
 
 
-rails g super_scaffold Flight Team name:text_field description:text_field external:boolean preflight:boolean warning:number_field --sortable
+rails g super_scaffold Flight Team name:text_field --sortable
+rails g super_scaffold:field Flight description:text_field external:boolean preflight:boolean
+rails g super_scaffold:field Flight warning_alert:number_field
+
+
 rails g super_scaffold Flights::Timeframe Team name:text_field --sortable
+
 
 
 rails g super_scaffold:field Flight flights_timeframe_id:super_select{class_name=Flights::Timeframe}
 
 
 rails g super_scaffold Flights::Check Team name:text_field retreat_id:super_select{class_name=Retreat} flight_id:super_select{class_name=Flight} user_id:super_select{class_name=Membership} completed_at:date_and_time_field
-
 
 
 rails g super_scaffold Items::Option Item,Team name:text_field capacity:number_field image_tag:image --sortable
@@ -84,7 +90,7 @@ rails g super_scaffold:field Retreat contact_ids:super_select{class_name=Organiz
 
 rails g super_scaffold Retreats::Comment Retreat,Team name:text_field user_id:super_select{class_name=Membership}
 
-rails g super_scaffold Notification Team name:text_field user_id:super_select{class_name=Membership} read_at:date_and_time_field action_text:text_field emailed:boolean       #####notifiable:references{polymorphic}:index
+rails g super_scaffold Notification Team name:text_field user_id:super_select{class_name=Membership} read_at:date_and_time_field emailed:boolean       #####notifiable:references{polymorphic}:index
 
 
 rails g super_scaffold Notifications::Flag Team name:text_field department_id:super_select{class_name=Department}
@@ -94,7 +100,7 @@ rails g model Notifications::Request team:references name:string user:references
 bin/super-scaffold crud Notifications::Request Team name:text_field user_id:super_select{class_name=Membership} notifications_flag_id:super_select{class_name=Notifications::Flag} days_before:text_field email:boolean
 
 
-rails g super_scaffold Notifications::Request Team name:text_field user_id:super_select{class_name=Membership} notifications_flag_id:super_select{class_name=Notifications::Flag} days_before:text_field email:boolean
+rails g super_scaffold Notifications::Request Team name:text_field user_id:super_select{class_name=Membership} notifications_flag_id:super_select{class_name=Notifications::Flag} days_before:number_field email:boolean
 
 rails g super_scaffold Season Team name:text_field item_id:super_select{class_name=Item} season_start:date_and_time_field season_end:date_and_time_field start_time:date_and_time_field end_time:date_and_time_field quantity:number_field notes:text_field
 
@@ -115,7 +121,7 @@ rails g super_scaffold:field Question demographic_ids:super_select{class_name=De
 rails g super_scaffold Websiteimage Team name:text_field description:text_field image:image
 
 
-rails g migration add_item_query_to_team
+//rails g migration add_item_query_to_team
 
 rails g super_scaffold:field Team item_query:text_field
 rails g super_scaffold:field Team circuitree_api:text_field
@@ -166,7 +172,7 @@ rails generate super_scaffold:audit_logs Location Team name:text_field capacity:
 rails g super_scaffold:field Diet abbreviation:text_field
 
 
-rails g super_scaffold:field Reservation dining_style:text_field
+////rails g super_scaffold:field Reservation dining_style:text_field
 
 
 rails g super_scaffold:bt_power_pack:filter Medform Team full_name:text_field
@@ -175,6 +181,6 @@ rails g super_scaffold:bt_power_pack:filter Medform Team full_name:text_field
 
 
 
-
+ADD THIS   #####notifiable:references{polymorphic}:index
 
 

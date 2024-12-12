@@ -70,6 +70,9 @@ shallow do
         resources :flags
         resources :requests
       end
+
+      resources :questions, concerns: [:sortable]
+      resources :websiteimages
     end
   end
 end
