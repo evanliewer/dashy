@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_12_12_211616) do
+ActiveRecord::Schema[7.2].define(version: 2024_12_12_212911) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -159,6 +159,17 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_12_211616) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["team_id"], name: "index_flights_timeframes_on_team_id"
+  end
+
+  create_table "games", force: :cascade do |t|
+    t.bigint "team_id", null: false
+    t.string "red_score"
+    t.string "blue_score"
+    t.string "yellow_score"
+    t.string "green_score"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["team_id"], name: "index_games_on_team_id"
   end
 
   create_table "integrations_stripe_installations", force: :cascade do |t|
@@ -596,6 +607,22 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_12_211616) do
     t.index ["tangible_thing_id"], name: "index_tangible_things_assignments_on_tangible_thing_id"
   end
 
+  create_table "seasons", force: :cascade do |t|
+    t.bigint "team_id", null: false
+    t.string "name"
+    t.bigint "item_id"
+    t.datetime "season_start"
+    t.datetime "season_end"
+    t.datetime "start_time"
+    t.datetime "end_time"
+    t.integer "quantity"
+    t.string "notes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["item_id"], name: "index_seasons_on_item_id"
+    t.index ["team_id"], name: "index_seasons_on_team_id"
+  end
+
   create_table "teams", id: :serial, force: :cascade do |t|
     t.string "name"
     t.string "slug"
@@ -739,6 +766,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_12_211616) do
   add_foreign_key "flights_checks", "retreats"
   add_foreign_key "flights_checks", "teams"
   add_foreign_key "flights_timeframes", "teams"
+  add_foreign_key "games", "teams"
   add_foreign_key "integrations_stripe_installations", "oauth_stripe_accounts"
   add_foreign_key "integrations_stripe_installations", "teams"
   add_foreign_key "invitations", "account_onboarding_invitation_lists", column: "invitation_list_id"
@@ -805,6 +833,8 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_12_211616) do
   add_foreign_key "scaffolding_completely_concrete_tangible_things", "scaffolding_absolutely_abstract_creative_concepts", column: "absolutely_abstract_creative_concept_id"
   add_foreign_key "scaffolding_completely_concrete_tangible_things_assignments", "memberships"
   add_foreign_key "scaffolding_completely_concrete_tangible_things_assignments", "scaffolding_completely_concrete_tangible_things", column: "tangible_thing_id"
+  add_foreign_key "seasons", "items"
+  add_foreign_key "seasons", "teams"
   add_foreign_key "users", "oauth_applications", column: "platform_agent_of_id"
   add_foreign_key "webhooks_outgoing_endpoints", "scaffolding_absolutely_abstract_creative_concepts"
   add_foreign_key "webhooks_outgoing_endpoints", "teams"

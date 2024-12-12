@@ -195,6 +195,20 @@ rails g super_scaffold:bt_power_pack:filter Medform Team full_name:text_field
 ////rails g super_scaffold:field Retreat dining_style:text_field
 
 
+  create_table "games", force: :cascade do |t|
+    t.bigint "team_id", null: false
+    t.string "red_score"
+    t.string "blue_score"
+    t.string "yellow_score"
+    t.string "green_score"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["team_id"], name: "index_games_on_team_id"
+
+
+ rails g super_scaffold Game Team red_score:text_field blue_score:text_field yellow_score:text_field green_score:text_field   
+
+
 
 ADD THIS   #####notifiable:references{polymorphic}:index
 

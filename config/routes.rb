@@ -113,6 +113,8 @@ Rails.application.routes.draw do
         resources :websiteimages
         resources :diets, concerns: [:sortable]
         resources :medforms
+        resources :games
+        resources :seasons
       end
     end
   end

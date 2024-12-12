@@ -26,6 +26,8 @@ class Team < ApplicationRecord
   has_many :items_areas, class_name: "Items::Area", dependent: :destroy
   has_many :diets, dependent: :destroy
   has_many :medforms, dependent: :destroy
+  has_many :games, dependent: :destroy
+  has_many :seasons, dependent: :destroy
   # 🚅 add has_many associations above.
 
   # 🚅 add oauth providers above.

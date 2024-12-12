@@ -1,32 +1,87 @@
 <% expand ||= false %>
 
 <% unless hide_team_resource_menus? %>
+
+
+
   <%= render 'account/shared/menu/section' do %>
     <%= render 'account/teams/menu_item' %>
-    <%= render 'account/scaffolding/absolutely_abstract/creative_concepts/menu_item' unless scaffolding_things_disabled? %>
+    <%# render 'account/scaffolding/absolutely_abstract/creative_concepts/menu_item' unless scaffolding_things_disabled? %>
     <% # added by super scaffolding. %>
-    <%= render 'account/medforms/menu_item' %>
-    <%= render 'account/diets/menu_item' %>
-    <%= render 'account/items/areas/menu_item' %>
-    <%= render 'account/retreats/requests/menu_item' %>
-    <%= render 'account/websiteimages/menu_item' %>
-    <%= render 'account/questions/menu_item' %>
-    <%= render 'account/notifications/requests/menu_item' %>
-    <%= render 'account/notifications/flags/menu_item' %>
-    <%= render 'account/notifications/menu_item' %>
-    <%= render 'account/organizations/contacts/menu_item' %>
-    <%= render 'account/flights/checks/menu_item' %>
-    <%= render 'account/flights/timeframes/menu_item' %>
-    <%= render 'account/flights/menu_item' %>
-    <%= render 'account/items/tags/menu_item' %>
-    <%= render 'account/reservations/menu_item' %>
+
+  <!-- Begin Search Form -->
+      <% begin %>
+        <% @search_query = params[:search_query] %>
+        <% @retreats = if @search_query.present?
+                         Retreat.where("name ILIKE ?", "%#{@search_query}%")
+                       else
+                         Retreat.all.limit(9)
+                       end %>
+        <%= form_with url: account_team_retreats_path(team_id: current_team.id), method: :get, local: true do %>
+          <div class="flex flex-wrap space-y-4 md:space-y-0">
+            <!-- Search Field -->
+            <div class="w-full ">
+              <%= text_field_tag :search_query, @search_query, class: "w-full h-10 px-3 text-base placeholder-gray-600 border rounded-lg focus:shadow-outline", placeholder: "Search Retreats", onkeydown: "if(event.key === 'Enter') this.form.submit();" %>
+            </div>
+          </div>
+        <% end %>
+      <% rescue => ex %>
+        <%= ex.message %>
+      <% end %>  
+<!-- End Search Form -->
+
     <%= render 'account/retreats/menu_item' %>
+    <%= render 'account/reservations/menu_item' %>
     <%= render 'account/items/menu_item' %>
-    <%= render 'account/organizations/menu_item' %>
-    <%= render 'account/locations/menu_item' %>
-    <%= render 'account/departments/menu_item' %>
-    <%= render 'account/demographics/menu_item' %>
+    <%= render 'account/items/menu_item_tag', tag: 'Lodging' %>
+    <%= render 'account/items/menu_item_tag', tag: 'Meeting Spaces' %>
+
+
+
+
+
+    
+    <%= render 'account/shared/menu/section', title: "Notifications" do %>
+      <%= render 'account/notifications/menu_item' %>
+      <%= render 'account/notifications/requests/menu_item' %>
+      
+      
+    <% end %>
+    
+    
+
+    <%= render 'account/shared/menu/section', title: "Flights" do %>
+      <%= render 'account/flights/checks/menu_item' %>
+      <%= render 'account/flights/timeframes/menu_item' %>
+      <%= render 'account/flights/menu_item' %>
+    <% end %>
+    
+    
+  
+    <%= render 'account/shared/menu/section', title: "Settings" do %>
+    <%= render 'account/items/areas/menu_item' %>
+      <%= render 'account/items/tags/menu_item' %>
+      <%= render 'account/locations/menu_item' %>
+      <%= render 'account/departments/menu_item' %>
+      <%= render 'account/demographics/menu_item' %>
+      <%= render 'account/websiteimages/menu_item' %>
+      <%= render 'account/questions/menu_item' %>
+      <%= render 'account/notifications/flags/menu_item' %>
+      <%= render 'account/games/menu_item' %>
+    <% end %>
+
+    <%= render 'account/shared/menu/section', title: "Event Planning" do %>
+     <%= render 'account/seasons/menu_item' %>
+     <%= render 'account/organizations/menu_item' %>
+     <%= render 'account/organizations/contacts/menu_item' %>
+     <%= render 'account/medforms/menu_item' %>
+     <%= render 'account/diets/menu_item' %> 
+    <% end %>
+ 
+   
   <% end %>
+
+  <%# render 'account/announcements/menu_item' %>
 
   <% @last_menu_orientation = @menu_orientation %>
   <% @menu_orientation = :side %>

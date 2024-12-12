@@ -1,5 +1,7 @@
 default:
   models:
+    Season: read
+    Game: read
     Medform: read
     Diet: read
     Items::Area: read
@@ -51,6 +53,8 @@ admin:
     - admin
     - editor
   models:
+    Season: manage
+    Game: manage
     Medform: manage
     Diet: manage
     Items::Area: manage
