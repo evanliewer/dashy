@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_12_12_154416) do
+ActiveRecord::Schema[7.2].define(version: 2024_12_12_190813) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -196,6 +196,17 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_12_154416) do
     t.datetime "updated_at", null: false
     t.index ["item_id"], name: "index_items_applied_tags_on_item_id"
     t.index ["tag_id"], name: "index_items_applied_tags_on_tag_id"
+  end
+
+  create_table "items_areas", force: :cascade do |t|
+    t.bigint "team_id", null: false
+    t.integer "sort_order"
+    t.string "name"
+    t.bigint "location_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["location_id"], name: "index_items_areas_on_location_id"
+    t.index ["team_id"], name: "index_items_areas_on_team_id"
   end
 
   create_table "items_options", force: :cascade do |t|
@@ -496,6 +507,18 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_12_154416) do
     t.index ["retreat_id"], name: "index_retreats_planner_tags_on_retreat_id"
   end
 
+  create_table "retreats_requests", force: :cascade do |t|
+    t.bigint "team_id", null: false
+    t.bigint "retreat_id", null: false
+    t.bigint "department_id"
+    t.string "notes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["department_id"], name: "index_retreats_requests_on_department_id"
+    t.index ["retreat_id"], name: "index_retreats_requests_on_retreat_id"
+    t.index ["team_id"], name: "index_retreats_requests_on_team_id"
+  end
+
   create_table "scaffolding_absolutely_abstract_creative_concepts", force: :cascade do |t|
     t.bigint "team_id", null: false
     t.string "name"
@@ -546,6 +569,10 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_12_154416) do
     t.boolean "being_destroyed"
     t.string "time_zone"
     t.string "locale"
+    t.string "item_query"
+    t.string "circuitree_api"
+    t.string "groups_query"
+    t.string "reservation_download"
   end
 
   create_table "users", id: :serial, force: :cascade do |t|
@@ -684,6 +711,8 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_12_154416) do
   add_foreign_key "items", "teams"
   add_foreign_key "items_applied_tags", "items"
   add_foreign_key "items_applied_tags", "items_tags", column: "tag_id"
+  add_foreign_key "items_areas", "locations"
+  add_foreign_key "items_areas", "teams"
   add_foreign_key "items_options", "items"
   add_foreign_key "items_tags", "teams"
   add_foreign_key "locations", "teams"
@@ -728,6 +757,9 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_12_154416) do
   add_foreign_key "retreats_location_tags", "retreats"
   add_foreign_key "retreats_planner_tags", "memberships", column: "planner_id"
   add_foreign_key "retreats_planner_tags", "retreats"
+  add_foreign_key "retreats_requests", "departments"
+  add_foreign_key "retreats_requests", "retreats"
+  add_foreign_key "retreats_requests", "teams"
   add_foreign_key "scaffolding_absolutely_abstract_creative_concepts", "teams"
   add_foreign_key "scaffolding_completely_concrete_tangible_things", "scaffolding_absolutely_abstract_creative_concepts", column: "absolutely_abstract_creative_concept_id"
   add_foreign_key "scaffolding_completely_concrete_tangible_things_assignments", "memberships"

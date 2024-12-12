@@ -5,6 +5,10 @@ class Api::V1::TeamsController < Api::V1::ApplicationController
 
   def permitted_fields
     [
+      :item_query,
+      :circuitree_api,
+      :groups_query,
+      :reservation_download,
       # 🚅 super scaffolding will insert new fields above this line.
     ]
   end

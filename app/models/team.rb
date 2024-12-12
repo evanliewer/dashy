@@ -22,6 +22,8 @@ class Team < ApplicationRecord
   has_many :notifications_requests, class_name: "Notifications::Request", dependent: :destroy
   has_many :questions, dependent: :destroy
   has_many :websiteimages, dependent: :destroy
+  has_many :retreats_requests, class_name: "Retreats::Request", dependent: :destroy
+  has_many :items_areas, class_name: "Items::Area", dependent: :destroy
   # 🚅 add has_many associations above.
 
   # 🚅 add oauth providers above.

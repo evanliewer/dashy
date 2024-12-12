@@ -49,6 +49,7 @@ shallow do
       namespace :items do
         resources :tags
         resources :options, except: collection_actions, concerns: [:sortable]
+        resources :areas, concerns: [:sortable]
       end
 
       resources :flights, concerns: [:sortable]
@@ -63,6 +64,7 @@ shallow do
 
       namespace :retreats do
         resources :comments, except: collection_actions
+        resources :requests
       end
 
       resources :notifications

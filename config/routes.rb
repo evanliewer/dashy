@@ -85,6 +85,7 @@ Rails.application.routes.draw do
         namespace :items do
           resources :tags
           resources :options, except: collection_actions, concerns: [:sortable]
+          resources :areas, concerns: [:sortable]
         end
 
         resources :flights, concerns: [:sortable]
@@ -99,6 +100,7 @@ Rails.application.routes.draw do
 
         namespace :retreats do
           resources :comments, except: collection_actions
+          resources :requests
         end
 
         resources :notifications

@@ -1,5 +1,7 @@
 default:
   models:
+    Items::Area: read
+    Retreats::Request: read
     Websiteimage: read
     Question: read
     Notifications::Request: read
@@ -47,6 +49,8 @@ admin:
     - admin
     - editor
   models:
+    Items::Area: manage
+    Retreats::Request: manage
     Websiteimage: manage
     Question: manage
     Notifications::Request: manage
