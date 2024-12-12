@@ -20,6 +20,8 @@
       <%= render 'shared/fields/options', method: :exclusive %>
       <%= render 'shared/fields/options', method: :active %>
       <%= render 'shared/fields/text_field', method: :dining_style %>
+      <%= render 'shared/fields/super_select', method: :items_option_id, options: {}, html_options: {},
+        choices: @reservation.valid_items_options.map { |option| [option.label_string, option.id] } %>
       <%# 🚅 super scaffolding will insert new fields above this line. %>
     <% end %>
 

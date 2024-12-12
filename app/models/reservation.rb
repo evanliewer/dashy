@@ -7,6 +7,7 @@ class Reservation < ApplicationRecord
   belongs_to :retreat, optional: true
   belongs_to :item, optional: true
   belongs_to :user, class_name: "Membership", optional: true
+  belongs_to :items_option, class_name: "Items::Option", optional: true
   # 🚅 add belongs_to associations above.
 
   # 🚅 add has_many associations above.
@@ -19,6 +20,7 @@ class Reservation < ApplicationRecord
   validates :retreat, scope: true
   validates :item, scope: true
   validates :user, scope: true
+  validates :items_option, scope: true
   # 🚅 add validations above.
 
   # 🚅 add callbacks above.
@@ -35,6 +37,10 @@ class Reservation < ApplicationRecord
 
   def valid_users
     team.memberships.current_and_invited
+  end
+
+  def valid_items_options
+    self.item.options
   end
 
   # 🚅 add methods above.

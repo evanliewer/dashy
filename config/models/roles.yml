@@ -1,5 +1,6 @@
 default:
   models:
+    Diet: read
     Items::Area: read
     Retreats::Request: read
     Websiteimage: read
@@ -49,6 +50,7 @@ admin:
     - admin
     - editor
   models:
+    Diet: manage
     Items::Area: manage
     Retreats::Request: manage
     Websiteimage: manage

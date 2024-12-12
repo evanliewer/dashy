@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_12_12_190813) do
+ActiveRecord::Schema[7.2].define(version: 2024_12_12_193424) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -112,6 +112,15 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_12_190813) do
     t.index ["tag_id"], name: "index_departments_applied_tags_on_tag_id"
   end
 
+  create_table "diets", force: :cascade do |t|
+    t.bigint "team_id", null: false
+    t.integer "sort_order"
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["team_id"], name: "index_diets_on_team_id"
+  end
+
   create_table "flights", force: :cascade do |t|
     t.bigint "team_id", null: false
     t.integer "sort_order"
@@ -185,6 +194,8 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_12_190813) do
     t.integer "beds"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "items_area_id"
+    t.index ["items_area_id"], name: "index_items_on_items_area_id"
     t.index ["location_id"], name: "index_items_on_location_id"
     t.index ["team_id"], name: "index_items_on_team_id"
   end
@@ -426,7 +437,9 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_12_190813) do
     t.string "dining_style"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "items_option_id"
     t.index ["item_id"], name: "index_reservations_on_item_id"
+    t.index ["items_option_id"], name: "index_reservations_on_items_option_id"
     t.index ["retreat_id"], name: "index_reservations_on_retreat_id"
     t.index ["team_id"], name: "index_reservations_on_team_id"
     t.index ["user_id"], name: "index_reservations_on_user_id"
@@ -696,6 +709,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_12_190813) do
   add_foreign_key "departments", "teams"
   add_foreign_key "departments_applied_tags", "departments"
   add_foreign_key "departments_applied_tags", "items_tags", column: "tag_id"
+  add_foreign_key "diets", "teams"
   add_foreign_key "flights", "flights_timeframes"
   add_foreign_key "flights", "teams"
   add_foreign_key "flights_checks", "flights"
@@ -707,6 +721,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_12_190813) do
   add_foreign_key "integrations_stripe_installations", "teams"
   add_foreign_key "invitations", "account_onboarding_invitation_lists", column: "invitation_list_id"
   add_foreign_key "invitations", "teams"
+  add_foreign_key "items", "items_areas"
   add_foreign_key "items", "locations"
   add_foreign_key "items", "teams"
   add_foreign_key "items_applied_tags", "items"
@@ -740,6 +755,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_12_190813) do
   add_foreign_key "questions_location_tags", "locations"
   add_foreign_key "questions_location_tags", "questions"
   add_foreign_key "reservations", "items"
+  add_foreign_key "reservations", "items_options"
   add_foreign_key "reservations", "memberships", column: "user_id"
   add_foreign_key "reservations", "retreats"
   add_foreign_key "reservations", "teams"

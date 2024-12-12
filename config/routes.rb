@@ -111,6 +111,7 @@ Rails.application.routes.draw do
 
         resources :questions, concerns: [:sortable]
         resources :websiteimages
+        resources :diets, concerns: [:sortable]
       end
     end
   end

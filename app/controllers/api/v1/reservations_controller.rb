@@ -56,6 +56,7 @@ if defined?(Api::V1::ApplicationController)
           :exclusive,
           :active,
           :dining_style,
+          :items_option_id,
           # 🚅 super scaffolding will insert new fields above this line.
           *permitted_arrays,
           # 🚅 super scaffolding will insert new arrays above this line.

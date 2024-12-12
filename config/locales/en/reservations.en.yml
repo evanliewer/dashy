@@ -112,6 +112,14 @@ en:
         heading: *dining_style
         api_title: *dining_style
         api_description: *dining_style
+      items_option_id: &items_option
+        _: &items_option_id Items Option
+        label: *items_option_id
+        heading: *items_option_id
+        api_title: *items_option_id
+        api_description: *items_option_id
+        placeholder: None
+      items_option: *items_option
       # 🚅 super scaffolding will insert new fields above this line.
       created_at:
         _: &created_at Added
@@ -180,6 +188,7 @@ en:
         exclusive: *exclusive
         active: *active
         dining_style: *dining_style
+        items_option_id: *items_option_id
         # 🚅 super scaffolding will insert new activerecord attributes above this line.
         created_at: *created_at
         updated_at: *updated_at
