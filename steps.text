@@ -30,8 +30,8 @@ rails g super_scaffold Demographic Team name:text_field --sortable
 rails g super_scaffold Department Team name:text_field dashboard:boolean --sortable
 rails g super_scaffold Location Team name:text_field initials:text_field capacity:number_field hex_color:color_picker active:buttons --sortable
 rails g super_scaffold Organization Team name:text_field address:address_field website:text_field
-rails g super_scaffold Item Team name:text_field description:text_field location_id:super_select{class_name=Location} active:boolean overlap_offset:number_field image_tag:image clean:boolean flip_time:number_field beds:number_field
-rails g super_scaffold Retreat Team name:text_field description:text_field arrival:date_and_time_field departure:date_and_time_field guest_count:number_field organization_id:super_select{class_name:Organization} internal:boolean active:boolean jotform:text_field
+rails g super_scaffold Item Team name:text_field description:text_field location_id:super_select{class_name=Location} active:boolean overlap_offset:number_field image_tag:image clean:boolean flip_time:number_field beds:number_field layout:file_field
+rails g super_scaffold Retreat Team name:text_field description:text_field arrival:date_and_time_field departure:date_and_time_field contract_count:number_field organization_id:super_select{class_name:Organization} internal:boolean active:boolean actual_count:number_field nps:number_field debrief:text_field dining_style:text_field
 
 rails g super_scaffold:join_model Retreats::LocationTag retreat_id{class_name=Retreat} location_id{class_name=Location}
 rails g super_scaffold:field Retreat location_ids:super_select{class_name=Location}
@@ -109,7 +109,7 @@ rails g super_scaffold:field Question demographic_ids:super_select{class_name=De
 
 
 
-rails g super_scaffold:field Item layout:file_field
+////rails g super_scaffold:field Item layout:file_field
 
 
 rails g super_scaffold Websiteimage Team name:text_field description:text_field image:image
@@ -151,7 +151,7 @@ rails g super_scaffold:field reseravtion items_option_id:super_select(class_name
 rails g super_scaffold Diet Team name:text_field --sortable
 rails g super_scaffold:field Medform diet_id:super_select{class_name=Diet}
 
-rails g super_scaffold:field Retreat actual_group_size:number_field
+/////rails g super_scaffold:field Retreat actual_group_size:number_field
 
 
 
@@ -160,7 +160,7 @@ rails g super_scaffold:field Medform gender:text_field address:address_field eme
 rails generate super_scaffold:audit_logs Location Team name:text_field capacity:number_field
 
 
-rails g super_scaffold:field Retreat nps:number_field debrief:text_field
+////rails g super_scaffold:field Retreat nps:number_field debrief:text_field
 
 
 rails g super_scaffold:field Diet abbreviation:text_field
@@ -171,7 +171,7 @@ rails g super_scaffold:field Reservation dining_style:text_field
 
 rails g super_scaffold:bt_power_pack:filter Medform Team full_name:text_field
 
-rails g super_scaffold:field Retreat dining_style:text_field
+////rails g super_scaffold:field Retreat dining_style:text_field
 
 
 

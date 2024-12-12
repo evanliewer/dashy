@@ -1,5 +1,7 @@
 default:
   models:
+    Retreat: read
+    Item: read
     Organization: read
     Location: read
     Department: read
@@ -32,6 +34,8 @@ admin:
     - admin
     - editor
   models:
+    Retreat: manage
+    Item: manage
     Organization: manage
     Location: manage
     Department: manage

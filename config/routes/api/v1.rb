@@ -35,6 +35,8 @@ shallow do
       resources :departments, concerns: [:sortable]
       resources :locations, concerns: [:sortable]
       resources :organizations
+      resources :items
+      resources :retreats
     end
   end
 end

@@ -7,6 +7,8 @@ class Demographic < ApplicationRecord
   belongs_to :team
   # 🚅 add belongs_to associations above.
 
+  has_many :retreats_demographic_tags, class_name: "Retreats::DemographicTag", dependent: :destroy
+  has_many :retreats, through: :retreats_demographic_tags
   # 🚅 add has_many associations above.
 
   # 🚅 add has_one associations above.
