@@ -7,6 +7,7 @@ class Item < ApplicationRecord
 
   belongs_to :team
   belongs_to :location, optional: true
+  belongs_to :items_area, class_name: "Items::Area", optional: true
   # 🚅 add belongs_to associations above.
 
   has_many :applied_tags, class_name: "Items::AppliedTag", dependent: :destroy
@@ -22,6 +23,7 @@ class Item < ApplicationRecord
 
   validates :name, presence: true
   validates :location, scope: true
+  validates :items_area, scope: true
   # 🚅 add validations above.
 
   after_validation :remove_image_tag, if: :image_tag_removal?
@@ -52,6 +54,10 @@ class Item < ApplicationRecord
 
   def valid_tags
     team.items_tags.order(:name)
+  end
+
+  def valid_items_areas
+    team.items_areas
   end
 
   # 🚅 add methods above.
