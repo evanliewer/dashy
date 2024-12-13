@@ -5,29 +5,30 @@ class Team < ApplicationRecord
 
   # 🚅 add belongs_to associations above.
 
-  has_many :demographics, dependent: :destroy
-  has_many :departments, dependent: :destroy
-  has_many :locations, dependent: :destroy
-  has_many :organizations, dependent: :destroy
-  has_many :items, dependent: :destroy
-  has_many :retreats, dependent: :destroy
-  has_many :reservations, dependent: :destroy
-  has_many :items_tags, class_name: "Items::Tag", dependent: :destroy
-  has_many :flights, dependent: :destroy
-  has_many :flights_timeframes, class_name: "Flights::Timeframe", dependent: :destroy
-  has_many :flights_checks, class_name: "Flights::Check", dependent: :destroy
-  has_many :organizations_contacts, class_name: "Organizations::Contact", dependent: :destroy
-  has_many :notifications, dependent: :destroy
-  has_many :notifications_flags, class_name: "Notifications::Flag", dependent: :destroy
-  has_many :notifications_requests, class_name: "Notifications::Request", dependent: :destroy
-  has_many :questions, dependent: :destroy
-  has_many :websiteimages, dependent: :destroy
-  has_many :retreats_requests, class_name: "Retreats::Request", dependent: :destroy
-  has_many :items_areas, class_name: "Items::Area", dependent: :destroy
-  has_many :diets, dependent: :destroy
-  has_many :medforms, dependent: :destroy
-  has_many :games, dependent: :destroy
-  has_many :seasons, dependent: :destroy
+  has_many :demographics, dependent: :destroy, enable_cable_ready_updates: true
+  has_many :departments, dependent: :destroy, enable_cable_ready_updates: true
+  has_many :locations, dependent: :destroy, enable_cable_ready_updates: true
+  has_many :items, dependent: :destroy, enable_cable_ready_updates: true
+  has_many :organizations, dependent: :destroy, enable_cable_ready_updates: true
+  has_many :retreats, dependent: :destroy, enable_cable_ready_updates: true
+  has_many :reservations, dependent: :destroy, enable_cable_ready_updates: true
+  has_many :items_tags, class_name: "Items::Tag", dependent: :destroy, enable_cable_ready_updates: true
+  has_many :flights, dependent: :destroy, enable_cable_ready_updates: true
+  has_many :flights_timeframes, class_name: "Flights::Timeframe", dependent: :destroy, enable_cable_ready_updates: true
+  has_many :flights_checks, class_name: "Flights::Check", dependent: :destroy, enable_cable_ready_updates: true
+  has_many :organizations_contacts, class_name: "Organizations::Contact", dependent: :destroy, enable_cable_ready_updates: true
+  has_many :notifications, dependent: :destroy, enable_cable_ready_updates: true
+  has_many :notifications_flags, class_name: "Notifications::Flag", dependent: :destroy, enable_cable_ready_updates: true
+  has_many :notifications_requests, class_name: "Notifications::Request", dependent: :destroy, enable_cable_ready_updates: true
+  has_many :seasons, dependent: :destroy, enable_cable_ready_updates: true
+  has_many :questions, dependent: :destroy, enable_cable_ready_updates: true
+  has_many :websiteimages, dependent: :destroy, enable_cable_ready_updates: true
+  has_many :retreats_requests, class_name: "Retreats::Request", dependent: :destroy, enable_cable_ready_updates: true
+  has_many :items_areas, class_name: "Items::Area", dependent: :destroy, enable_cable_ready_updates: true
+  has_many :games, dependent: :destroy, enable_cable_ready_updates: true
+  has_many :medforms, dependent: :destroy, enable_cable_ready_updates: true
+  has_many :diets, dependent: :destroy, enable_cable_ready_updates: true
+  
   # 🚅 add has_many associations above.
 
   # 🚅 add oauth providers above.

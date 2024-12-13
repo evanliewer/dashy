@@ -109,6 +109,12 @@ en:
         api_description: *items_area_id
         placeholder: None
       items_area: *items_area
+      image_tag:
+        _: &image_tag Image Tag
+        label: *image_tag
+        heading: *image_tag
+        api_title: *image_tag
+        api_description: *image_tag
       # 🚅 super scaffolding will insert new fields above this line.
       created_at:
         _: &created_at Added

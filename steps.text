@@ -208,7 +208,7 @@ rails g super_scaffold:bt_power_pack:filter Medform Team full_name:text_field
 
  rails g super_scaffold Game Team red_score:text_field blue_score:text_field yellow_score:text_field green_score:text_field   
 
-
+rails g super_scaffold:field Item image_tag:cloudinary_image
 
 ADD THIS   #####notifiable:references{polymorphic}:index
 
