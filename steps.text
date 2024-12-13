@@ -174,7 +174,7 @@ rails g super_scaffold Diet Team name:text_field --sortable
     t.boolean "terms", default: false
     t.string "form_for"
     t.string "age"
--
+
 
 rails g super_scaffold Medform Team name:text_field retreat_id:super_select{class_name=Retreat} phone:text_field email:text_field gender:text_field address:address_field emergency_contact_name:text_field emergency_contact_phone:text_field emergency_contact_relationship:text_field terms:boolean form_for:text_field age:text_field diet_id:super_select{class_name=Diet}
 
@@ -209,6 +209,8 @@ rails g super_scaffold:bt_power_pack:filter Medform Team full_name:text_field
  rails g super_scaffold Game Team red_score:text_field blue_score:text_field yellow_score:text_field green_score:text_field   
 
 rails g super_scaffold:field Item image_tag:cloudinary_image
+
+rails generate super_scaffold:action_models:targets_many Archive Notification Team
 
 ADD THIS   #####notifiable:references{polymorphic}:index
 

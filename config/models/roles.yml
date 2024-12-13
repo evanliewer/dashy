@@ -1,5 +1,6 @@
 default:
   models:
+    Notifications::ArchiveAction: read
     Season: read
     Game: read
     Medform: read
@@ -53,6 +54,7 @@ admin:
     - admin
     - editor
   models:
+    Notifications::ArchiveAction: manage
     Season: manage
     Game: manage
     Medform: manage

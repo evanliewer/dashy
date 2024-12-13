@@ -141,7 +141,12 @@ Rails.application.routes.draw do
             member do
               post 'approve'
             end
+            member do
+              post 'approve'
+            end
           end
+
+          resources :archive_actions
         end
 
         resources :seasons
