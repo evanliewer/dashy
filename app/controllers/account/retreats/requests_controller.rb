@@ -26,7 +26,7 @@ class Account::Retreats::RequestsController < Account::ApplicationController
   def create
     respond_to do |format|
       if @request.save
-        format.html { redirect_to [:account, @request], notice: I18n.t("retreats/requests.notifications.created") }
+        format.html { redirect_to [:account, @request.retreat], notice: I18n.t("retreats/requests.notifications.created") }
         format.json { render :show, status: :created, location: [:account, @request] }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -40,7 +40,7 @@ class Account::Retreats::RequestsController < Account::ApplicationController
   def update
     respond_to do |format|
       if @request.update(request_params)
-        format.html { redirect_to [:account, @request], notice: I18n.t("retreats/requests.notifications.updated") }
+        format.html { redirect_to [:account, @request.retreat], notice: I18n.t("retreats/requests.notifications.updated") }
         format.json { render :show, status: :ok, location: [:account, @request] }
       else
         format.html { render :edit, status: :unprocessable_entity }

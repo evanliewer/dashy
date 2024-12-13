@@ -45,7 +45,7 @@ class Account::RetreatsController < Account::ApplicationController
     create_requests
     delegate_json_to_api
     @medforms_count = Medform.where(retreat_id: @retreat.id).count.to_i
-    @previous_retreats = Retreat.where(organization_id: @retreat.organization_id).where.not(id: @retreat.id)
+    @previous_retreats = Retreat.where(organization_id: @retreat.organization_id).where.not(id: @retreat.id).limit(10)
     @meals = Reservation.includes([:items_option, :item]).where(retreat_id: @retreat.id, item_id: Item.where(name: ["Breakfast", "Lunch", "Dinner"], team_id: current_team.id).ids, team_id: current_team.id)
     @meetingspaces = Reservation.where(retreat_id: @retreat.id).joins(:item).where(items: { id: Item.joins(:tags).where(items_tags: { name: "Meeting Spaces" }).ids }).where.not(active: false)
     @lodging = Reservation.where(retreat_id: @retreat.id).joins(:item).where(items: { id: Item.joins(:tags).where(items_tags: { name: "Lodging" }).ids }).where.not(active: false).order(:name)

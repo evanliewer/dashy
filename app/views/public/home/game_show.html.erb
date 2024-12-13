@@ -1,0 +1,73 @@
+
+
+
+<% case @color %>
+  <% when "red" %>
+    <div class="bg-red-500 h-screen flex items-center justify-center">
+  <% when "blue" %>
+    <div class="bg-blue-500 h-screen flex items-center justify-center">
+  <% when "yellow" %>
+    <div class="bg-yellow-500 h-screen flex items-center justify-center">
+  <% when "green" %>
+    <div class="bg-green-500 h-screen flex items-center justify-center">
+  <% else %>
+    <div class="bg-gray-500 h-screen flex items-center justify-center">
+<% end %>
+
+
+
+
+
+	    <span class="text-white text-[300px] font-bold">
+<%= render 'account/shared/page' do |page| %>
+
+  <% page.body do %>
+     
+    <%= cable_ready_updates_for @score do %>
+		<script>
+			document.addEventListener("DOMContentLoaded", function() {
+		  const element = document.querySelector('.border-b.border-slate-200.pb-4.dark\\:border-slate-600');
+		  if (element) {
+		    element.remove();  // Remove the div
+		  }
+		});
+
+		</script>
+
+	  <% with_attribute_settings object: @score, strategy: :none do %>
+
+	  	<% case @color %>
+		  <% when "red" %>
+		    <%= render 'shared/attributes/number', attribute: :red_score %>
+		  <% when "blue" %>
+		    <%= render 'shared/attributes/number', attribute: :blue_score %>
+		  <% when "yellow" %>
+		    <%= render 'shared/attributes/number', attribute: :yellow_score %>
+		  <% when "green" %>
+		   <%= render 'shared/attributes/number', attribute: :green_score %>
+		  <% else %>
+		    <%= render 'shared/attributes/number', attribute: :red_score %>
+		<% end %>
+	    
+	  <% end %>
+
+  </span>
+ </div>  
+   
+    <% end %>
+
+    <%# 🚅 super scaffolding will insert new children above this line. %>
+  <% end %>
+<% end %>
+
+
+
+
+
+
+
+
+
+
+
+

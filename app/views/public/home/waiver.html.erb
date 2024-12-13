@@ -1,0 +1,35 @@
+<!-- Full page background styling -->
+
+
+
+<div style="background-image: url('http://res.cloudinary.com/du9u6ypp9/image/upload/b1savbzgvipkytw6lzmo'); background-size: cover; background-position: center; min-height: 100vh; display: flex; align-items: center; justify-content: center;">
+
+  <!-- Overlay to darken the background slightly for readability -->
+  <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.2);"></div>
+
+  <!-- Centering and compacting the form with styling -->
+  <div style="position: relative; z-index: 1; max-width: 800px; width: 100%; background-color: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); margin: 20px;">
+
+
+<%= render 'account/shared/page' do |page| %>
+<% page.title "Forest Home Waiver" %>
+  <% page.actions do %>
+    <%= link_to 'English', waiver_path(retreat: @retreat.obfuscated_id, language: "en"), class: "border-2 p-2 rounded-full border-indigo-300" %>
+    <%= link_to 'Spanish', waiver_path(retreat: @retreat.obfuscated_id, language: "sp"), class: "border-2 p-2 rounded-full border-indigo-300" %>
+    <%= link_to "Korean", waiver_path(retreat: @retreat.obfuscated_id, language: "kr"), class: "border-2 p-2 rounded-full border-indigo-300" %>
+  <% end %>
+  <% page.body.render 'account/shared/box', divider: false, no_background: true do |box| %>
+    <% box.body do %>
+       <div class="flex justify-center">
+        <img src="https://www.foresthome.org/wp-content/uploads/2020/10/FH_LOGO_2014.png" alt="Centered Image" class="w-48 max-w-full h-auto">
+      </div>  
+      <div class="text-center font-bold text-xl">
+        <%= @retreat.name %>
+      </div>
+        <div class="text-center">
+        We are excited for your retreat and other things
+      </div>
+    <% end %>
+      <% box.body.render 'medform_form', medform: @medform %>
+  <% end %>
+<% end %>

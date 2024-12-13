@@ -1,51 +1,157 @@
-<%= render 'account/shared/page' do |page| %>
-  <% page.title t('.section') %>
-  <% page.body do %>
-    <%= cable_ready_updates_for @retreat do %>
-      <%= render 'account/shared/box', divider: true do |box| %>
-        <% box.title t('.header') %>
-        <% box.description do %>
-          <%= t('.description') %>
-          <%= t('.manage_description') if can? :manage, @retreat %>
-        <% end %>
+<%= cable_ready_updates_for @retreat do %>
 
-        <% box.body do %>
-          <% with_attribute_settings object: @retreat, strategy: :label do %>
-            <%= render 'shared/attributes/text', attribute: :name %>
-            <%= render 'shared/attributes/text', attribute: :description %>
-            <%= render 'shared/attributes/date_and_time', attribute: :arrival %>
-            <%= render 'shared/attributes/date_and_time', attribute: :departure %>
-            <%= render 'shared/attributes/number', attribute: :contract_count %>
-            <%= render 'shared/attributes/belongs_to', attribute: :organization %>
-            <%= render 'shared/attributes/option', attribute: :internal %>
-            <%= render 'shared/attributes/option', attribute: :active %>
-            <%= render 'shared/attributes/number', attribute: :actual_count %>
-            <%= render 'shared/attributes/number', attribute: :nps %>
-            <%= render 'shared/attributes/text', attribute: :debrief %>
-            <%= render 'shared/attributes/text', attribute: :dining_style %>
-            <%= render 'shared/attributes/has_many', attribute: :locations %>
-            <%= render 'shared/attributes/has_many', attribute: :demographics %>
-            <%= render 'shared/attributes/has_many', attribute: :planners %>
-            <%= render 'shared/attributes/has_many', attribute: :hosts %>
-            <%= render 'shared/attributes/has_many', attribute: :contacts %>
-            <%# 🚅 super scaffolding will insert new fields above this line. %>
-          <% end %>
-        <% end %>
 
-        <% box.actions do %>
-          <%= link_to t('.buttons.edit'), [:edit, :account, @retreat], class: first_button_primary if can? :edit, @retreat %>
-          <%# 🚅 super scaffolding will insert new action model buttons above this line. %>
-          <%= button_to t('.buttons.destroy'), [:account, @retreat], method: :delete, class: first_button_primary, data: { confirm: t('.buttons.confirmations.destroy', model_locales(@retreat)) } if can? :destroy, @retreat %>
-          <%= link_to t('global.buttons.back'), [:account, @team, :retreats], class: first_button_primary %>
-        <% end %>
-
-        <% box.raw_footer do %>
-          <%# 🚅 super scaffolding will insert new action model index views above this line. %>
-        <% end %>
+<% with_attribute_settings object: @retreat do %>
+    <div class="w-full bg-white p-4 rounded-lg shadow-md flex flex-col lg:flex-row gap-4">
+  <!-- Left Box (Details Section) -->
+  <div class="flex-1">
+    <h1 class="text-3xl font-bold text-blue-600">
+      <%# render 'shared/attributes/text', attribute: :name %>
+      <%  if can? :edit, @retreat %>
+        <%= link_to @retreat.name, [:edit, :account, @retreat] %> <h2 class="text-2xl font-bold text-gray-800"><%= pluralize(@retreat.actual_count,"Guest") %>, <%= @retreat.locations.present? ? @retreat.locations.map { |p| p.name }.to_sentence : "Not Assigned" %></h2>
+      <% else %>
+        <%= render 'shared/attributes/text', attribute: :name %> <h2 class="text-2xl font-bold text-gray-800"><%= pluralize(@retreat.actual_count,"Guest") %>, <%= @retreat.locations.present? ? @retreat.locations.map { |p| p.name }.to_sentence : "Not Assigned" %></h2>
       <% end %>
+    </h1>
+    <p class="text-gray-600 mt-2">
+      <%= render 'shared/attributes/text', attribute: :description %>
+    </p>
+
+    <p class="mt-4">
+      
+      
+    </p>
+    <p>
+      <strong>Arriving:</strong> <%= @retreat.arrival.in_time_zone("America/Los_Angeles").strftime("%A %B #{@retreat.arrival.in_time_zone("America/Los_Angeles").day.ordinalize} %-l:%M%P") %>
+    </p>
+    <p>
+      <strong>Departing:</strong> <%= @retreat.departure.in_time_zone("America/Los_Angeles").strftime("%A %B #{@retreat.departure.in_time_zone("America/Los_Angeles").day.ordinalize} %-l:%M%P") %>
+    </p>
+    <p>
+      <strong>Details:</strong> <%= @retreat.demographics.map { |d| d.name }.to_sentence %> <%= pluralize((@retreat.departure&.to_date - @retreat.arrival&.to_date).to_i, "Night") %>, <%= pluralize(@meals.count, "Meal") %>
+    </p>
+
+    <p class="mt-4">
+      <strong>Meeting Spaces:</strong> <%= @meetingspaces.any? ? @meetingspaces.map { |p| p.name }.to_sentence : "None" %>
+    </p>
+    <p>
+      <strong>Lodging:</strong> <%= @lodging.any? ? @lodging.map { |p| p.name }.to_sentence : "None" %>
+    </p>
+    <p><strong>Group Leaders: </strong><%= @retreat.contacts.present? ? @retreat.contacts.map { |p| p.full_name }.to_sentence : "Not Assigned" %></p>
+    <p><strong>Event Planners: </strong><%= @retreat.planners.present? ? @retreat.planners.map { |p| p.full_name }.to_sentence : "Not Assigned" %></p>
+    <p><strong>Hosts: </strong><%= @retreat.hosts.present? ? @retreat.hosts.map { |p| p.full_name }.to_sentence : "Not Assigned" %></p>
+    <p><strong>Registrations: </strong><%= pluralize(@medforms_count, "Registration") %>, <%= @retreat.actual_count > 0 ? number_to_percentage((@medforms_count.to_f / @retreat.actual_count) * 100, precision: 1) : "N/A" %>
+</p>
+    <p><strong>Itinerary:</strong> <%= @retreat.id %> <strong>Last Update:</strong> <%= distance_of_time_in_words(Time.zone.now, @retreat.updated_at) %> ago</p>
+
+   
+
+
+
+    <% if @previous_retreats.any? %>
+     Previous Retreats:
+      <% @previous_retreats.each do |retreat| %>
+        <%= link_to retreat.arrival.in_time_zone('America/Los_Angeles').strftime("%B #{retreat.arrival.in_time_zone('America/Los_Angeles').day.ordinalize} %Y"), [:account, retreat], class: "" %><%# todo, based off NPS, make the color red green blue text-green-500 %> <%= '|' unless @previous_retreats.last == retreat %> 
+      <% end %>  
     <% end %>
 
+
+    <% @retreat.reservations.with_schedule_tag.each do |res| %>
+  <p><%= res.name %></p>
+<% end %> 
+
+  </div>
+  <!-- Location icons aligned at the bottom -->
+ 
+<% end ### with attributes settting %>  
+
+
+
+
+
+    <!-- Buttons Section -->
+    <div class="flex flex-col gap-2">
+      <%= link_to "Add New Reservation", [:new, :account, current_team, :reservation, { retreat_id: @retreat.id }], class: "bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-600 hover:no-underline hover:text-white" %>
+      <%= link_to "Group Page", root_path(id: @retreat.obfuscated_id), class: "bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-600 hover:no-underline hover:text-white" %>
+      <% if can? :create, Season.new(team: current_team) %>
+          <% if @seasonal %>
+           <%= link_to "Remove Seasonal Defaults", account_team_remove_seasonal_reservations_path(team_id: current_team.id, retreat_id: @retreat.id), data: { confirm: "Are you sure you want to remove all Seasonal Defaults to the group?  This will permantently remove them and they cannot be recovered.  You will be able to readd them from scratch." }, class: "bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-600 hover:no-underline  hover:text-white" %>
+          <% else %>
+            <%= link_to "Add Seasonal Defaults", account_team_create_seasonal_reservations_path(team_id: current_team.id, retreat_id: @retreat.id), data: { confirm: "Are you sure you want to add Seasonal Defaults to the group?" }, class: "bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-600 hover:no-underline hover:text-white" %> 
+          <% end %> 
+       <% end %>
+      <%= link_to "Printable schedule", account_team_print_retreat_path(team_id: @retreat.team_id, retreat_id: @retreat.id), class: "bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-600  hover:text-white hover:no-underline" %>
+      <%= link_to "Gold Sheet", account_team_print_gold_path(team_id: @retreat.team_id, retreat_id: @retreat.id), class: "bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-600  hover:text-white hover:no-underline" %>
+      <%= link_to "Lodging", account_team_lodging_path(team_id: @retreat.team_id), class: "bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-600  hover:text-white hover:no-underline" %>
+      <%= link_to "Med Forms", account_team_medforms_path(team_id: @retreat.team_id, retreat_id: @retreat.id), class: "bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-600  hover:text-white hover:no-underline" %>
+
+
+
+      <%= link_to "Kitchen View", kitchen_account_retreat_path(@retreat), class: "bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-600  hover:text-white hover:no-underline" %>
+    </div>
+  </div>
+
+
+
+<div class="mb-4"></div>
+
+
+
+<div class="bg-white p-6 rounded-lg shadow-md w-full mb-4">
+  <h2 class="text-xl font-bold text-gray-700 mb-4">Agenda</h2>
+
+
+<%= render 'account/retreats/schedule' %> 
+<%# render 'account/retreats/agenda' %>
+
+
+</div>
+
+
+
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full mb-4">
+  <!-- First Box -->
+  <div class="bg-white p-6 rounded-lg shadow-md w-full flex flex-col justify-between h-full">
+    <div>
+      <h2 class="text-xl font-bold text-gray-700 mb-4">Open Flights</h2>
+      <!-- Content for the first box goes here -->
+      <%= render 'account/retreats/flights', checks: Flights::Check.where(retreat_id: @retreat.id).where(completed_at: nil), hide_back: true %>
+    </div>    
+  </div>
+
+  <!-- Second Box -->
+  <div class="bg-white p-6 rounded-lg shadow-md w-full flex flex-col justify-between h-full">
+    <div>
+      <h2 class="text-xl font-bold text-gray-700 mb-4">Closed Flight</h2>
+      <!-- Content for the second box goes here -->
+      <%= render 'account/retreats/flights', checks: Flights::Check.where(retreat_id: @retreat.id).where.not(completed_at: nil), hide_back: true %>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+<% end %>  
+
+
+<%= render 'account/retreats/requests' %>
+
+
+
+
+
+<br/>
+  <% if can? :edit, @retreat %>
     <%= render 'account/retreats/comments/index', comments: @retreat.comments, hide_back: true %>
     <%# 🚅 super scaffolding will insert new children above this line. %>
+
+
+      <div class="bg-white p-6 rounded-lg shadow-md w-full mt-4">
+        <h2 class="text-xl font-bold text-gray-700 mb-4">Papertrail</h2>
+        <%= render 'account/retreats/papertrail' %>
+      </div>
   <% end %>
-<% end %>
