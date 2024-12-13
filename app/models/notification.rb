@@ -3,6 +3,7 @@ class Notification < ApplicationRecord
 
   # 🚅 add attribute accessors above.
 
+  belongs_to :notifiable, polymorphic: true
   belongs_to :team
   belongs_to :user, class_name: "Membership", optional: true
   # 🚅 add belongs_to associations above.

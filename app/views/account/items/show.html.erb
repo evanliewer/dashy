@@ -17,7 +17,10 @@
             <%= render 'shared/attributes/belongs_to', attribute: :location %>
             <%= render 'shared/attributes/option', attribute: :active %>
             <%= render 'shared/attributes/number', attribute: :overlap_offset %>
-            <%= render 'shared/attributes/image', attribute: :image_tag %>
+            <% begin %>
+             <% render 'shared/attributes/image', attribute: :image_tag %>
+            <% rescue %>
+            <% end %> 
             <%= render 'shared/attributes/option', attribute: :clean %>
             <%= render 'shared/attributes/number', attribute: :flip_time %>
             <%= render 'shared/attributes/number', attribute: :beds %>

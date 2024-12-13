@@ -191,6 +191,10 @@ class Account::RetreatsController < Account::ApplicationController
     render layout: false
   end
 
+  def calendar
+
+  end
+
   private
 
   if defined?(Api::V1::ApplicationController)
