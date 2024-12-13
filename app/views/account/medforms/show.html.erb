@@ -15,6 +15,8 @@
             <%= render 'shared/attributes/belongs_to', attribute: :retreat %>
             <%= render 'shared/attributes/text', attribute: :phone %>
             <%= render 'shared/attributes/text', attribute: :email %>
+            <%= render 'shared/attributes/text', attribute: :dietary %>
+            <%= render 'shared/attributes/belongs_to', attribute: :diet %>
             <%= render 'shared/attributes/text', attribute: :gender %>
             <%= render 'shared/attributes/address', attribute: :address %>
             <%= render 'shared/attributes/text', attribute: :emergency_contact_name %>
@@ -23,7 +25,6 @@
             <%= render 'shared/attributes/option', attribute: :terms %>
             <%= render 'shared/attributes/text', attribute: :form_for %>
             <%= render 'shared/attributes/text', attribute: :age %>
-            <%= render 'shared/attributes/belongs_to', attribute: :diet %>
             <%# 🚅 super scaffolding will insert new fields above this line. %>
           <% end %>
         <% end %>

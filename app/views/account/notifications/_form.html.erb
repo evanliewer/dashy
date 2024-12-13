@@ -9,6 +9,7 @@
       <%= render 'shared/fields/super_select', method: :user_id, options: {}, html_options: {},
         choices: @notification.valid_users.map { |membership| [membership.label_string, membership.id] } %>
       <%= render 'shared/fields/date_and_time_field', method: :read_at %>
+      <%= render 'shared/fields/text_field', method: :action_text %>
       <%= render 'shared/fields/options', method: :emailed %>
       <%# 🚅 super scaffolding will insert new fields above this line. %>
     <% end %>

@@ -15,7 +15,7 @@
       <% box.description do %>
         <%= t(".contexts.#{context.class.name.underscore}.description#{"_empty" unless items.any?}") %>
         <%= render "shared/limits/index", model: items.model %>
- 
+        <%# render "filter/filter_bar", model: @filter_item, context: context, collection: collection, filter_fields: [{name: :text_field}, {description: :text_field}] %>
       <% end %>
 
       <% box.table do %>

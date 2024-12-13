@@ -255,7 +255,7 @@
                         <i class="fa fa-map-marker fa-4x"></i>
                         <h3><%= t('group_show.event_details') %></h3>
                          <p>Camp Center: <%= @retreat.locations.map { |l| l.name }.to_sentence %></br>
-                           Group Size: <%= @retreat.guest_count %></br>  
+                           Group Size: <%= @retreat.actual_count %></br>  
                            Demographic: <%= @retreat.demographics.map { |d| d.name }.to_sentence %><br/>
                          </p>
                     </div>

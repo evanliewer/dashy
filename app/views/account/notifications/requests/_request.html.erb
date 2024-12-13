@@ -10,7 +10,7 @@
     <td><%= render 'shared/attributes/text', attribute: :name, url: [:account, request] %></td>
     <td><%= render 'shared/attributes/belongs_to', attribute: :user %></td>
     <td><%= render 'shared/attributes/belongs_to', attribute: :notifications_flag %></td>
-    <td><%= render 'shared/attributes/number', attribute: :days_before %></td>
+    <td><%= render 'shared/attributes/text', attribute: :days_before %></td>
     <td class="text-center"><%= render 'shared/attributes/option', attribute: :email %></td>
     <%# 🚅 super scaffolding will insert new fields above this line. %>
     <td><%= render 'shared/attributes/date_and_time', attribute: :created_at %></td>
