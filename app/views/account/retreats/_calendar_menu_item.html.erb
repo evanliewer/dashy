@@ -1,7 +1,7 @@
 
   <%= render 'account/shared/menu/item', {
-    url: main_app.polymorphic_path([:account, current_team, :retreats]),
-    label: t('retreats.navigation.label'),
+    url: account_team_calendar_path(team_id: current_team.id),
+    label: "Retreat Calendar",
   } do |p| %>
     <% p.icon do %>
       <i class="fal fa-solid fa-calendar-days"></i>

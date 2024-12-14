@@ -88,10 +88,11 @@ Rails.application.routes.draw do
         patch '/account/:team_id/fullcalendar_update', to: 'account/teams#update_fullcalendar_event', as: 'account_team_fullcalendar_update'
         get 'print_retreat' => 'retreats#print', as: 'print_retreat'
         get 'print_gold' => 'retreats#gold', as: 'print_gold'
-        get 'calendar' => 'retreats#calenar', as: 'calendar'
+        get 'calendar' => 'retreats#calendar', as: 'calendar'
         get '/lodging' => 'items#lodging', as: 'lodging'
         get 'schedule_json' => 'reservations#schedule_json', as: 'schedule_json'
         get 'calendar_json' => 'reservations#calendar_json', as: 'calendar_json'
+        get 'retreat_calendar_json' => 'retreats#calendar_json', as: 'retreat_calendar_json'
         get 'mark_notification_read' => 'notifications#mark_notification_read', as: 'mark_notification_read'
 
         resources :demographics, concerns: [:sortable]

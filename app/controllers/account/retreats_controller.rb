@@ -192,7 +192,28 @@ class Account::RetreatsController < Account::ApplicationController
   end
 
   def calendar
+    @team = current_team
+    @retreat = Retreat.last
+  end
 
+  def calendar_json
+    @retreats = Retreat.where(internal: false)
+    respond_to do |format|
+      format.json do
+        # Explicitly convert to array before rendering
+        transformed_retreats = @retreats.map do |retreat|
+          {
+            id: retreat.id,
+            start_time: retreat.arrival,
+            end_time: retreat.departure,
+            title: "#{retreat&.name} (#{retreat.actual_count || 'N/A'})",
+            location: retreat.locations.first.name
+          }
+        end
+
+        render json: transformed_retreats
+      end
+    end
   end
 
   private
