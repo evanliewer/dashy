@@ -197,7 +197,12 @@ class Account::RetreatsController < Account::ApplicationController
   end
 
   def calendar_json
-    @retreats = Retreat.where(internal: false)
+     location = params[:location]
+     @retreats = if location.present? && location != "All"
+                   Retreat.joins(:locations).where(locations: { name: location }).where(internal: false)
+                 else
+                   Retreat.where(internal: false)
+                 end
     respond_to do |format|
       format.json do
         # Explicitly convert to array before rendering

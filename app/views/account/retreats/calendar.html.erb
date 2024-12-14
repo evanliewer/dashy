@@ -1,3 +1,11 @@
+<div id="filters">
+    <%= link_to "Forest Center", account_team_calendar_path(team_id: current_team.id, location: "Forest Center"), class: "button" %>
+    <%= link_to "Lakeview", account_team_calendar_path(team_id: current_team.id, location: "Lakeview"), class: "button" %>
+    <%= link_to "Creekside", account_team_calendar_path(team_id: current_team.id, location: "Creekside"), class: "button" %>
+</div>
+ <%= params[:location] %>
+
+
 <!-- Full Calendar  -->
 <!--<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.4/index.global.min.js'></script>-->
 <script src='https://cdn.jsdelivr.net/npm/fullcalendar-scheduler@6.1.15/index.global.min.js'></script>
@@ -16,6 +24,7 @@ document.addEventListener('turbo:load', function() {
       {
         url: '<%= account_team_retreat_calendar_json_path(team_id: current_team.id, format: :json) %>', 
         extraParams: {
+          location: '<%= params[:location] %>',
         },
         success: function(data) {
           var events = data.map(function(retreat) {
@@ -102,8 +111,14 @@ document.addEventListener('turbo:load', function() {
     }
   });
 
+
+
   calendar.render();
+
+
 });
+
+
 </script>
 
 <!-- End Full Calendar -->
