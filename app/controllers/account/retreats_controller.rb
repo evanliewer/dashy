@@ -16,8 +16,8 @@ class Account::RetreatsController < Account::ApplicationController
         @retreats = Retreat.where('arrival <= ? AND departure >= ?', Time.current, Time.current).where(active: true).order(:arrival)
       when "last_week"
         @retreats = Retreat.where('arrival >= ? AND arrival <= ?', 7.days.ago.beginning_of_day, Time.current.end_of_day).where(active: true).order(:arrival)
-      when "no_internal"
-        @retreats = Retreat.where('arrival > ?', Date.today.beginning_of_day).where.not(internal: true).where(active: true).limit(50).order(:arrival)
+      when "internal_groups"
+        @retreats = Retreat.unscoped.where('arrival > ?', Date.today.beginning_of_day).where(active: true).limit(50).order(:arrival)
       when "forest_center"
         @retreats = Retreat.joins(:locations).where(locations: { name: 'Forest Center' }).where('arrival > ?', Date.today.beginning_of_day).where(active: true).limit(50).order(:arrival)
       when "lakeview"

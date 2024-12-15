@@ -7,7 +7,8 @@ class Items::Area < ApplicationRecord
   belongs_to :team
   belongs_to :location, optional: true
   # 🚅 add belongs_to associations above.
-
+  #has_many :items
+  has_many :items, foreign_key: 'items_area_id'
   # 🚅 add has_many associations above.
 
   # 🚅 add has_one associations above.

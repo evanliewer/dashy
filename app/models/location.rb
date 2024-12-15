@@ -11,6 +11,7 @@ class Location < ApplicationRecord
   has_many :retreats, through: :retreats_location_tags
   has_many :questions_location_tags, class_name: "Questions::LocationTag", dependent: :destroy
   has_many :questions, through: :questions_location_tags
+  has_many :item_areas, class_name: 'Items::Area', dependent: :destroy
   # 🚅 add has_many associations above.
 
   # 🚅 add has_one associations above.

@@ -2,6 +2,7 @@
     <%= link_to "Forest Center", account_team_calendar_path(team_id: current_team.id, location: "Forest Center"), class: "button" %>
     <%= link_to "Lakeview", account_team_calendar_path(team_id: current_team.id, location: "Lakeview"), class: "button" %>
     <%= link_to "Creekside", account_team_calendar_path(team_id: current_team.id, location: "Creekside"), class: "button" %>
+    <%= link_to "All", account_team_calendar_path(team_id: current_team.id), class: "button" %>
 </div>
  <%= params[:location] %>
 
@@ -11,6 +12,7 @@
 <script src='https://cdn.jsdelivr.net/npm/fullcalendar-scheduler@6.1.15/index.global.min.js'></script>
 <script>
 document.addEventListener('turbo:load', function() {
+ 
   var calendarEl = document.getElementById('calendar');
 
   // Check if a calendar is already initialized and destroy it
@@ -33,6 +35,9 @@ document.addEventListener('turbo:load', function() {
               title: retreat.title,
               start: retreat.start_time,
               end: retreat.end_time,
+              extendedProps: {
+                            location: retreat.location // Ensure custom properties are assigned to extendedProps
+                        },
               allDay: false
             };
           });
@@ -45,6 +50,17 @@ document.addEventListener('turbo:load', function() {
     ],
     <% days = 4 %>
     initialView: 'dayGridMonth', 
+   navLinks: true,  // Ensure day numbers are clickable
+        navLinkDayClick: function(date, jsEvent) {
+          //  console.log('Day clicked', date.toISOString());
+            var basePath = "<%= account_team_lodging_path(team_id: current_team.id, date: 'DATE_PLACEHOLDER') %>";
+            var dateFormatted = date.toISOString().slice(0, 10);
+            var dynamicUrl = basePath.replace('DATE_PLACEHOLDER', dateFormatted);
+             window.location.href = dynamicUrl;
+         //   window.location.href = '/lodging/' + date.toISOString().slice(0, 10);
+        
+        },
+
     views: {
       timeGridFlex: {
         type: 'dayGridMonth',
@@ -76,21 +92,21 @@ document.addEventListener('turbo:load', function() {
     },
     eventDidMount: function(info) {
     
-
+     // console.log(info.event.extendedProps); 
       // Apply styles based on location
       if (info.event.extendedProps.location && info.event.extendedProps.location.includes("Creekside")) {
-        info.el.style.backgroundColor = "#FFA500"; // Gold color for meals
-        info.el.style.borderColor = "#FFA500";
+        info.el.style.backgroundColor = "#AA4A44"; // Gold color for meals
+        info.el.style.borderColor = "#AA4A44";
         info.el.style.color = "#000000"; // Black text color
       }
       else if (info.event.extendedProps.location && info.event.extendedProps.location.includes("Forest Center")) {
-        info.el.style.backgroundColor = "#FFA5FF"; // Gold color for meals
-        info.el.style.borderColor = "#FFA500";
+        info.el.style.backgroundColor = "#088F8F"; // Gold color for meals
+        info.el.style.borderColor = "#088F8F";
         info.el.style.color = "#000000"; // Black text color
       }
       else if (info.event.extendedProps.location && info.event.extendedProps.location.includes("Lakeview")) {
-        info.el.style.backgroundColor = "#FFA5FF"; // Gold color for meals
-        info.el.style.borderColor = "#FFA500";
+        info.el.style.backgroundColor = "#6495ED"; // Gold color for meals
+        info.el.style.borderColor = "#6495ED";
         info.el.style.color = "#FFFFFF"; // Black text color
       }
 

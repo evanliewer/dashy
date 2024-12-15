@@ -7,7 +7,9 @@ class Item < ApplicationRecord
 
   belongs_to :team
   belongs_to :location, optional: true
-  belongs_to :items_area, class_name: "Items::Area", optional: true
+  belongs_to :items_area, class_name: "Items::Area", foreign_key: 'items_area_id', optional: true
+  belongs_to :area, class_name: 'Items::Area', foreign_key: 'items_area_id', optional: true
+ # belongs_to :area, class_name: 'Items::Area', foreign_key: 'items_area_id', optional: true
   # 🚅 add belongs_to associations above.
 
   has_many :applied_tags, class_name: "Items::AppliedTag", dependent: :destroy

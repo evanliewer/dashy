@@ -26,6 +26,7 @@ class Retreat < ApplicationRecord
 
   # 🚅 add has_one associations above.
   #default_scope { where(active: true) }
+  default_scope { where(active: true).where(internal: false) }
   scope :search_by_id_or_name, ->(query) {
     query = query.to_s.strip
       if query.match?(/^\d+$/) # Check if the query is numeric

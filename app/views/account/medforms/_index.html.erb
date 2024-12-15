@@ -18,7 +18,7 @@
 
         There are <%= pluralize(@medforms.count, "Release Forms") %> <%= @retreat.present? ? "for #{@retreat.name}" : "located below." %>
         <%= render "shared/limits/index", model: medforms.model %>
-        <%= render "filter/filter_bar", model: @filter_medform, context: context, collection: collection, filter_fields: [{name: :text_field}] %>
+        <%# render "filter/filter_bar", model: @filter_medform, context: context, collection: collection, filter_fields: [{name: :text_field}] %>
       <% end %>
 
       <% box.table do %>

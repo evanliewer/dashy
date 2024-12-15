@@ -31,7 +31,10 @@
 
     <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
       <div class="lg:col-span-2">
-        <%= render 'shared/fields/image', method: :image_tag %>
+        <% begin %>
+          <%= render 'shared/fields/image', method: :image_tag %>
+        <% rescue %>
+        <% end %>  
       </div>
      <div class="lg:col-span-2">
         <%= render 'shared/fields/file_field', method: :layout %>
