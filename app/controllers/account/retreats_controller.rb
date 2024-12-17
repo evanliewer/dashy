@@ -11,26 +11,26 @@ class Account::RetreatsController < Account::ApplicationController
     elsif params[:search].present?
       case params[:search]
       when "next_7_days"
-        @retreats = Retreat.where(arrival: Date.today.beginning_of_day..(Date.today + 7.days).end_of_day).where(active: true).order(:arrival)
+        @retreats = Retreat.where(arrival: Date.today.beginning_of_day..(Date.today + 7.days).end_of_day).where(active: true).where(internal: false).order(:arrival)
       when "on_site"
-        @retreats = Retreat.where('arrival <= ? AND departure >= ?', Time.current, Time.current).where(active: true).order(:arrival)
+        @retreats = Retreat.where('arrival <= ? AND departure >= ?', Time.current, Time.current).where(active: true).where(internal: false).order(:arrival)
       when "last_week"
-        @retreats = Retreat.where('arrival >= ? AND arrival <= ?', 7.days.ago.beginning_of_day, Time.current.end_of_day).where(active: true).order(:arrival)
+        @retreats = Retreat.where('arrival >= ? AND arrival <= ?', 7.days.ago.beginning_of_day, Time.current.end_of_day).where(active: true).where(internal: false).order(:arrival)
       when "internal_groups"
         @retreats = Retreat.unscoped.where('arrival > ?', Date.today.beginning_of_day).where(active: true).limit(50).order(:arrival)
       when "forest_center"
-        @retreats = Retreat.joins(:locations).where(locations: { name: 'Forest Center' }).where('arrival > ?', Date.today.beginning_of_day).where(active: true).limit(50).order(:arrival)
+        @retreats = Retreat.joins(:locations).where(locations: { name: 'Forest Center' }).where('arrival > ?', Date.today.beginning_of_day).where(active: true).where(internal: false).limit(50).order(:arrival)
       when "lakeview"
-        @retreats = Retreat.joins(:locations).where(locations: { name: 'Lakeview' }).where('arrival > ?', Date.today.beginning_of_day).where(active: true).limit(50).order(:arrival)
+        @retreats = Retreat.joins(:locations).where(locations: { name: 'Lakeview' }).where('arrival > ?', Date.today.beginning_of_day).where(active: true).where(internal: false).limit(50).order(:arrival)
       when "creekside"
-        @retreats = Retreat.joins(:locations).where(locations: { name: 'Creekside' }).where('arrival > ?', Date.today.beginning_of_day).where(active: true).limit(50).order(:arrival)
+        @retreats = Retreat.joins(:locations).where(locations: { name: 'Creekside' }).where('arrival > ?', Date.today.beginning_of_day).where(active: true).where(internal: false).limit(50).order(:arrival)
       when "huddle"
         @retreats = Retreat.where(arrival: (Date.today - 7.days).beginning_of_day..(Date.today + 7.days).end_of_day).where(active: true).where.not(internal: true).order(:arrival)
       else
-        @retreats = Retreat.where('arrival > ?', Date.today.beginning_of_day).where(active: true).order(:arrival).limit(50)
+        @retreats = Retreat.where('arrival > ?', Date.today.beginning_of_day).where(active: true).where(internal: false).order(:arrival).limit(50)
       end
     else 
-      @retreats = Retreat.where('arrival > ?', Date.today.beginning_of_day).where(active: true).order(:arrival).limit(50)
+      @retreats = Retreat.where('arrival > ?', Date.today.beginning_of_day).where(active: true).where(internal: false).order(:arrival).limit(50)
     end  
     @next_7 = Retreat.where(arrival: Date.today.beginning_of_day..(Date.today + 7.days).end_of_day).where(active: true).order(:arrival)
 
@@ -220,6 +220,70 @@ class Account::RetreatsController < Account::ApplicationController
       end
     end
   end
+
+  def daily_counts
+    @team = current_team
+    @retreat = Retreat.last
+  end
+
+   def daily_counts_json
+ # start_date = Date.today.beginning_of_month
+ # end_date = Date.today.end_of_month
+  start_date = params[:start_date] ? Date.parse(params[:start_date]) : Date.today.beginning_of_month
+  end_date = params[:end_date] ? Date.parse(params[:end_date]) : Date.today.end_of_month
+
+
+  # Initialize the daily summary
+  daily_summary = (start_date..end_date).map { |date| [date, {'FC' => 0, 'LV' => 0, 'CS' => 0, 'CR' => 0}] }.to_h
+
+  # Fetch and process retreats
+  Retreat.includes(:locations).where(internal: false)
+         .where('arrival <= ? AND departure >= ?', end_date, start_date)
+         .find_each do |retreat|
+          puts retreat.name
+          puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+    next unless retreat.arrival && retreat.departure # Ensure dates are present
+    retreat_start = retreat.arrival.to_date
+    retreat_end = retreat.departure.to_date
+    (retreat_start..retreat_end).each do |date|
+      puts date
+      puts "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+      next if date < start_date || date > end_date
+      retreat.locations.each do |location|
+        puts location.name
+        puts "------------------------------------------------------------------"
+        puts "Count: " + retreat.contract_count.to_s 
+        location_abbr = location.name[0..1].upcase  # Use the first two letters uppercase as the abbreviation
+        location_abbr = location.initials.upcase 
+        puts location_abbr 
+        begin 
+          daily_summary[date][location_abbr] += retreat.contract_count# if daily_summary[date].has_key?(location_abbr.to_sym)
+        rescue
+        end
+        puts daily_summary[date]
+        puts daily_summary[date][location_abbr]
+      end
+    end
+  end
+
+  # Generate JSON output
+  respond_to do |format|
+    format.json do
+      result = daily_summary.map do |date, counts|
+        {
+          id: rand(1..1000),
+          start_time: date.to_s,
+          end_time: (date + 1).to_s, # Ensure date is not nil before adding
+          title: counts.map { |loc, count| "#{loc}: #{count}" }.join(", "),
+          allDay: true
+        }
+      end
+      render json: result
+    end
+  end
+end
+
+
 
   private
 

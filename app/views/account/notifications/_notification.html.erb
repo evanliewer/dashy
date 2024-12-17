@@ -7,7 +7,13 @@
 <% with_attribute_settings object: notification do %>
   <tr data-id="<%= notification.id %>">
     <%= render "shared/tables/checkbox", object: notification %>
-    <td><%= render 'shared/attributes/text', attribute: :name, url: [:account, notification.notifiable] %></td>
+    <td>
+      <% begin %>
+       <%= render 'shared/attributes/text', attribute: :name, url: [:account, notification.notifiable] %>
+      <% rescue %>
+        <%= render 'shared/attributes/text', attribute: :name %>
+      <% end %>
+    </td>
     <td><%= render 'shared/attributes/belongs_to', attribute: :user %></td>
     <td><%= render 'shared/attributes/date_and_time', attribute: :read_at %></td>
     <td><%= distance_of_time_in_words(Time.zone.now, notification.created_at) %> ago</td>

@@ -67,7 +67,7 @@ module Circuitree
     Team.all.each do |team|
      puts "Begin CT Download for #{team.name}"
      start_date = Date.today
-     end_date = Date.today + 14.days
+     end_date = Date.today + 50.days
 
      puts "CTquery method from CT library module"
      url = "https://api.circuitree.com/Exports/ExecuteQuery.json"

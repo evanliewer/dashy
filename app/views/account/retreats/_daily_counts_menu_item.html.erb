@@ -1,7 +1,7 @@
 
   <%= render 'account/shared/menu/item', {
-    url: account_team_calendar_path(team_id: current_team.id, data: { turbolinks: false }),
-    label: "Retreat Calendar",
+    url: account_team_daily_counts_path(team_id: current_team.id, data: { turbolinks: false }),
+    label: "Daily Count",
   } do |p| %>
     <% p.icon do %>
       <i class="fal fa-solid fa-calendar-days"></i>

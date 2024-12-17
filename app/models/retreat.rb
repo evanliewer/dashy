@@ -26,7 +26,7 @@ class Retreat < ApplicationRecord
 
   # 🚅 add has_one associations above.
   #default_scope { where(active: true) }
-  default_scope { where(active: true).where(internal: false) }
+  default_scope { where(active: true) }
   scope :search_by_id_or_name, ->(query) {
     query = query.to_s.strip
       if query.match?(/^\d+$/) # Check if the query is numeric
@@ -76,14 +76,15 @@ class Retreat < ApplicationRecord
   end
 
   def notify_group_size_changes
+    #contract count and actual count
     @change = nil
     # Check for changes in `actual_group_size` first
-    if saved_change_to_actual_group_size?
-      old_value, new_value = saved_change_to_actual_group_size
+    if saved_change_to_contract_count?
+      old_value, new_value = saved_change_to_contract_count
       @change = "#{self.organization&.name} changed guest count from #{old_value} to #{new_value}"
-    elsif saved_change_to_guest_count?
+    elsif saved_change_to_actual_count?
       # Check for changes in `guest_count` only if `actual_group_size` didn't change
-      old_value, new_value = saved_change_to_guest_count
+      old_value, new_value = saved_change_to_actual_count
       @change = "#{self.organization&.name} changed guest count from #{old_value} to #{new_value}"
     end
 

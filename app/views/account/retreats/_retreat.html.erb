@@ -14,7 +14,7 @@
                         <td>
                           <div class="row">
                             <div class="text-base text-gray-900 font-semibold text-lg">
-                              <%= render 'shared/attributes/text', attribute: (retreat.internal? && retreat.description.present? ? :description : :name), url: [:account, retreat] %>
+                              <%= render 'shared/attributes/text', attribute: (retreat.internal? && retreat.description.present? ? :description : :name), url: [:account, retreat], data: { turbolinks: false } %>
                             </div>
                                
                           </div>

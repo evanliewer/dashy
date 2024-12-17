@@ -89,10 +89,12 @@ Rails.application.routes.draw do
         get 'print_retreat' => 'retreats#print', as: 'print_retreat'
         get 'print_gold' => 'retreats#gold', as: 'print_gold'
         get 'calendar' => 'retreats#calendar', as: 'calendar'
+        get 'daily_counts' => 'retreats#daily_counts', as: 'daily_counts'
         get '/lodging' => 'items#lodging', as: 'lodging'
         get 'schedule_json' => 'reservations#schedule_json', as: 'schedule_json'
         get 'calendar_json' => 'reservations#calendar_json', as: 'calendar_json'
         get 'retreat_calendar_json' => 'retreats#calendar_json', as: 'retreat_calendar_json'
+        get 'daily_counts_json' => 'retreats#daily_counts_json', as: 'daily_counts_json'
         get 'mark_notification_read' => 'notifications#mark_notification_read', as: 'mark_notification_read'
 
         resources :demographics, concerns: [:sortable]

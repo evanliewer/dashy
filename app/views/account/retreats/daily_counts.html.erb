@@ -1,0 +1,140 @@
+
+
+<!-- Full Calendar  -->
+<!--<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.4/index.global.min.js'></script>-->
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar-scheduler@6.1.15/index.global.min.js'></script>
+<script>
+document.addEventListener('turbo:load', function() {
+ 
+  var calendarEl = document.getElementById('calendar');
+
+  // Check if a calendar is already initialized and destroy it
+  if (calendarEl && calendarEl.fullCalendarInstance) {
+    calendarEl.fullCalendarInstance.destroy();
+    delete calendarEl.fullCalendarInstance;
+  }
+
+  var calendar = new FullCalendar.Calendar(calendarEl, {  
+    eventSources: [
+      {
+        url: '<%= account_team_daily_counts_json_path(team_id: current_team.id, format: :json) %>', 
+        extraParams: {
+          location: '<%= params[:location] %>',
+        //  start_date: calendar.view.currentStart.toISOString(), // or formatDate(calendar.view.currentStart)
+        //  end_date: calendar.view.currentEnd.toISOString()
+        },
+        success: function(data) {
+          var events = data.map(function(retreat) {
+            return {
+              id: retreat.id,
+              title: retreat.title,
+              start: retreat.start_time,
+              end: retreat.end_time,
+              extendedProps: {
+                            location: retreat.location // Ensure custom properties are assigned to extendedProps
+                        },
+              allDay: false
+            };
+          });
+          return events;
+        },
+        error: function(error) {
+          console.error('Error fetching events:', error);
+        }
+      }
+    ],
+    <% days = 4 %>
+    initialView: 'dayGridMonth', 
+   navLinks: true,  // Ensure day numbers are clickable
+        navLinkDayClick: function(date, jsEvent) {
+          //  console.log('Day clicked', date.toISOString());
+            var basePath = "<%= account_team_lodging_path(team_id: current_team.id, date: 'DATE_PLACEHOLDER') %>";
+            var dateFormatted = date.toISOString().slice(0, 10);
+            var dynamicUrl = basePath.replace('DATE_PLACEHOLDER', dateFormatted);
+             window.location.href = dynamicUrl;
+         //   window.location.href = '/lodging/' + date.toISOString().slice(0, 10);
+        
+        },
+
+    views: {
+      timeGridFlex: {
+        type: 'dayGridMonth',
+        duration: { days: <%= days %> }
+      }
+    },
+    initialDate: '<%= Time.zone.now.strftime("%Y-%m-%d") %>',
+    slotMinTime: '06:00:00',
+    slotMaxTime: '23:00:00',
+    slotDuration: '00:30:00',
+    height: "auto",
+    editable: false,  // Set editable to false to disable dragging and resizing
+    droppable: false,
+    schedulerLicenseKey: 'CC-Attribution-NonCommercial-NoDerivatives',
+    headerToolbar: {
+      start: '',
+      center: 'title',
+      <% if days > 7 %>
+      end: 'prev,next today'
+      <% end %>
+    },
+    eventTimeFormat: {
+      // hour: '2-digit',
+      // minute: '2-digit',
+      // meridiem: true
+    },
+    eventContent: function(info) {
+      return { html: `<div>${info.event.title}</div>` }; // Render only the title
+    },
+    eventDidMount: function(info) {
+    
+     // console.log(info.event.extendedProps); 
+      // Apply styles based on location
+      if (info.event.extendedProps.location && info.event.extendedProps.location.includes("Creekside")) {
+        info.el.style.backgroundColor = "#AA4A44"; // Gold color for meals
+        info.el.style.borderColor = "#AA4A44";
+        info.el.style.color = "#000000"; // Black text color
+      }
+      else if (info.event.extendedProps.location && info.event.extendedProps.location.includes("Forest Center")) {
+        info.el.style.backgroundColor = "#088F8F"; // Gold color for meals
+        info.el.style.borderColor = "#088F8F";
+        info.el.style.color = "#000000"; // Black text color
+      }
+      else if (info.event.extendedProps.location && info.event.extendedProps.location.includes("Lakeview")) {
+        info.el.style.backgroundColor = "#6495ED"; // Gold color for meals
+        info.el.style.borderColor = "#6495ED";
+        info.el.style.color = "#FFFFFF"; // Black text color
+      }
+
+
+
+      var startTime = new Date(info.event.start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      var endTime = info.event.end ? new Date(info.event.end).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : null;
+      var tooltipContent = `${info.event.title}`;
+      if (startTime) tooltipContent += `\nStart: ${startTime}`;
+      if (endTime) tooltipContent += `\nEnd: ${endTime}`;
+      info.el.setAttribute('title', tooltipContent); // Adds a native browser tooltip
+    },
+    eventClick: function(info) {
+      var retreatId = info.event.id; // Get the retreat ID from the event object
+      var editUrl = '/account/retreats/' + retreatId; // Construct the URL dynamically
+      window.location.href = editUrl; // Redirect to the edit page
+      info.jsEvent.preventDefault(); // Prevents the default browser behavior
+    }
+  });
+
+
+
+  calendar.render();
+
+
+});
+
+
+</script>
+
+<!-- End Full Calendar -->
+<div class="container mx-auto grid grid-cols-1 lg:grid-cols-1 gap-4">
+  <div class="col-span-1 flex flex-col bg-white border-2 p-4 rounded-lg">
+    <div id='calendar'></div>
+  </div>
+</div>
