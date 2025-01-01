@@ -309,6 +309,122 @@ module Circuitree
   end 
  end #Group Download 
 
+ def self.program_download(team = nil, year = nil)
+    Team.all.each do |team|
+     puts "Begin CT Download for #{team.name}"
+     start_date = Date.today
+     end_date = Date.today + 50.days
+
+     puts "CTquery method from CT library module"
+     url = "https://api.circuitree.com/Exports/ExecuteQuery.json"
+   
+     paramArray = []
+
+     param = {
+      'ParameterID' => 8,
+      'ParameterValue' => start_date
+        }
+     paramArray << param   
+
+     param = {
+      'ParameterID' => 9,
+      'ParameterValue' => end_date
+        } 
+     paramArray << param  
+  
+     
+     data = {
+        'ApiToken' => team.circuitree_api,
+        'ExportQueryID' =>  team.groups_query,
+        'QueryParameters' => paramArray
+      }
+
+      uri = URI(url)
+      http = Net::HTTP.new(uri.host, uri.port)
+      http.use_ssl = true
+      req = Net::HTTP::Post.new(uri.path, 'Content-Type' => 'application/json')
+      req.body = data.to_json
+      res = http.request(req)
+      ct_results = JSON.parse(res.body)
+
+        puts "Starting Itinerary Download"
+        begin
+           ct_results.each do |key,value|
+            if key == "Results"
+              JSON.parse(value).each do |val|
+                puts "--------------------~~~~~ " + val['GroupName'] + " ~~~~~---------------------------"
+                begin
+                 puts "start itinerary search and save"
+                 retreat = Retreat.find_or_initialize_by(:team_id => team.id, :id => val['ItineraryID'].to_i)
+                 #unless retreat.import_lock == true
+                   retreat.name = val['EventName'].to_s
+                   
+                   if Rails.env.production?
+                    retreat.arrival = DateTime.parse(val['ArrivalDateTime'])
+                    retreat.departure = DateTime.parse(val['DepartureDateTime'])
+                   else 
+                    puts "Development"
+                    arrivalDateTime = val['ArrivalDateTime'].to_datetime
+                    departureDateTime = val['DepartureDateTime'].to_datetime
+                    arrival = Time.now.in_time_zone("Pacific Time (US & Canada)")
+                    departure = Time.now.in_time_zone("Pacific Time (US & Canada)")
+                    retreat.arrival = arrival.change(:year => arrivalDateTime.year, :month => arrivalDateTime.month, :day => arrivalDateTime.day, :hour => arrivalDateTime.hour, :min => arrivalDateTime.min)
+                    retreat.departure = departure.change(:year => departureDateTime.year, :month => departureDateTime.month, :day => departureDateTime.day, :hour => departureDateTime.hour, :min => departureDateTime.min)
+                   end 
+                   
+                   retreat.contract_count = val['GuestCount'].to_i
+                   retreat.id = val['EventID'].to_i
+                   
+
+
+                   ##Save Organization 
+                   organization = Organization.find_or_create_by(:team_id => team.id, :name => val['GroupName'].to_s)       
+                   organization.name = val['GroupName'].to_s
+                   organization.save!
+                   retreat.organization_id = organization.id 
+                   retreat.save(validate: false) 
+                  # retreat.versions.last.update_attributes!(:whodunnit => 1) ##Havent tested
+
+                   puts "Arrival: " + retreat.arrival.strftime("%A %B #{retreat.arrival.day.ordinalize} %-l%P")
+                   puts "Departure: " + retreat.departure.strftime("%A %B #{retreat.departure.day.ordinalize}  %-l%P")
+                   puts "Guest Contract Count: " + retreat.contract_count.to_s
+                   puts "ItineraryStatus: " + retreat.active.to_s
+              
+
+
+
+
+                   ##Save Location
+                    location = Location.find_or_create_by(:team_id => team.id, :name => val['Location'].to_s) do |l|
+                      l.initials = val['Location'].to_s[0, 2].upcase
+                      l.save
+                    end
+
+                
+
+
+
+                  end
+                 
+                 
+                 
+                rescue => ex
+                  puts "Not a successful Itinerary Download"
+                  puts ex.message
+                end   
+              end   ##JSON.parse 
+            end  ##if Key
+          end ## ct_results  
+        rescue => ex
+          puts ex.message
+        end 
+      puts "Completed Program Events Download"
+    
+
+      puts "Success"
+  end 
+ end #Program Events Download 
+
 
  def self.Reservations_download(itinerary)
         current_team = Team.first

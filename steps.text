@@ -212,6 +212,9 @@ rails g super_scaffold:field Item image_tag:cloudinary_image
 
 rails generate super_scaffold:action_models:targets_many Archive Notification Team
 
+add_reference :notifications, :notifiable, polymorphic: true, null: false
+
+
 ADD THIS   #####notifiable:references{polymorphic}:index
 
-
+rails g super_scaffold:field Retreat program_event:boolean
