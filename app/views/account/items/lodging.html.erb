@@ -1,6 +1,5 @@
 <%= render 'account/shared/page' do |page| %>
-  <% page.title "Lodging" %>
- <% reservations = Reservation.all.limit(20) %>
+<% page.title "Lodging" %>
 <% team = @team %>
 <% context ||= team %>
 <% collection ||= :reservations %>
@@ -9,35 +8,48 @@
 <% end %>
 
 
-<% Location.all.each do |location| %>
+<% Location.all.order(:sort_order).each do |location| %>
 <div class="grid grid-cols-1 md:grid-cols-4 gap-4 w-full mt-4">
-  <% location.item_areas.each do |area| %>
+  <% location.item_areas.order(:sort_order).each do |area| %>
     <div class="flex w-full p-4 flex-col rounded-lg bg-white shadow-sm border border-slate-200">
-      <h1><%= area.name %></h1>
+      <h1 class="text-center font-bold text-xl"><%= area.name %></h1>
       <div class="flex items-center gap-4 text-slate-800">
-        <table style="width: 100%; border-collapse: collapse;">
-          <thead>
-            <th>Room</th>
-            <th>Status</th>
-          </thead>
-          <% area.items.each do |item| %>
-            <% item.reservations.each do |reservation| %>
-              <tr>
-                <td><strong><%= item.name %>:</strong> <%= item.area.name %></td>
-                <td>
-                  <% if reservation.start_time.future? %>
-                    <%= link_to "#{(reservation.start_time.to_date - Date.today).to_i} days", [:edit, :account, reservation] %>
-                  <% else %>
-                    In Use
-                  <% end %>
-                </td>
-              </tr>
-            <% end %>
+        <table style="width: 100%; border-collapse: collapse; text-align: left;">
+  <thead>
+    <tr style="border-bottom: 2px solid #ccc;">
+      <th style="padding: 10px; font-weight: bold; text-align: left;">Room</th>
+      <th style="padding: 10px; font-weight: bold; text-align: left;">Status</th>
+      <th style="padding: 10px; font-weight: bold; text-align: left;">Reserve</th>
+    </tr>
+  </thead>
+  <tbody>
+    <%# @reservations = Reservation.joins(item: :area).where(items_areas: { id: area.id }) %>
+    <% @reservations.joins(item: :area).where(items_areas: { id: area.id }).order('items.name ASC').each do |reservation| %>
+      <tr style="border-bottom: 1px solid #eee;">
+        <td style="padding: 10px;"><strong><%= reservation.item.name %></strong></td>
+        <td style="padding: 10px;">
+          <% if reservation.start_time.future? %>
+            <%= link_to "#{(reservation.start_time.to_date - Date.today).to_i} days", [:edit, :account, reservation], style: "color: #007BFF; text-decoration: none;", title: reservation&.retreat&.name  %>
+          <% else %>
+            <span style="color: #FF0000; font-weight: bold;" title="<%= reservation&.retreat&.name %>">In Use</span>
           <% end %>
-        </table>
+        </td>
+        <td>
+          <% if reservation.start_time.future? %>
+            Reserve
+          <% end %>
+
+        </td>  
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+    
       </div>
     </div>
   <% end %>
 </div>
 <% end %>
+
 

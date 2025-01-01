@@ -37,6 +37,60 @@ class Public::HomeController < Public::ApplicationController
   end
 
 
+  def retreats_json_api
+    respond_to do |format|
+      format.json do
+        @retreats = Retreat.where('arrival > ?', Time.now)
+        transformed_retreats = @retreats.map do |retreat|
+          {
+            id: retreat.id,
+            name: retreat.name,
+            description: retreat.description,
+            arrival: retreat.arrival,
+            departure: retreat.departure,
+            size: retreat.contract_count,
+            organization_id: retreat.organization_id,
+            internal: retreat.internal,
+            active: retreat.active
+          }
+        end 
+        render json: transformed_retreats
+      end
+    end
+  end
+
+  def reservations_json_api
+    respond_to do |format|
+      format.json do
+        if params[:retreat_id].present?
+          @reservations = Reservation.where(retreat_id: params[:retreat_id])
+        else 
+          @reservations = Reservation.all.limit(2)
+        end  
+        transformed_reservations = @reservations.map do |reservation|
+          {
+            id: reservation.id,
+            name: reservation.name,
+            retreat_id: reservation.retreat_id,
+            item_id: reservation.item_id,
+            user_id: reservation.user_id,
+            start_time: reservation.start_time,
+            end_time: reservation.end_time,
+            quantity: reservation.quantity,
+            notes: reservation.notes,
+            seasonal_default: reservation.seasonal_default,
+            exclusive: reservation.exclusive,
+            active: reservation.active
+
+          }
+        end 
+        render json: transformed_reservations
+      end
+    end
+  end
+
+
+
 
   def waiver
    if params[:language] == "fr"

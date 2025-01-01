@@ -1,0 +1,10 @@
+
+  <%= render 'account/shared/menu/item', {
+    url: account_team_lodging_path(team_id: current_team.id, date: Date.today),
+    label: "Tonight's Housing",
+  } do |p| %>
+    <% p.icon do %>
+      <i class="fal fa-solid fa-house-night"></i>
+    <% end %>
+  <% end %>
+

@@ -91,15 +91,23 @@ class Account::ItemsController < Account::ApplicationController
     
 
       #Reservations for unique lodging items
-    @reservations = Reservation
+    @reservations1 = Reservation
       .where(item_id: Item.joins(:tags).where(tags: { name: 'Lodging' }).pluck(:id))  # Filter by all item IDs
       .where('end_time > ?', @given_date)  # Ensure end_time is in the future
       .select('DISTINCT ON (item_id) *')  # Ensure only one reservation per item
       .order('item_id, start_time ASC')  # First order by item_id, then by start_time
 
-
-  #Only Open
     @reservations = Reservation
+  .joins(item: :area)  # Joins items and areas
+  .where(item_id: Item.joins(:tags).where(tags: { name: 'Lodging' }).pluck(:id))  # Filter by item tags
+  .where('reservations.end_time > ?', @given_date)  # Ensure end_time is in the future
+  .select('DISTINCT ON (reservations.item_id) reservations.*')  # Get one reservation per item_id
+  .order('reservations.item_id, reservations.start_time ASC')  # Order by item_id, then start_time
+
+
+ 
+  #Only Open
+    @reservations2 = Reservation
       .where(item_id: Item.joins(:tags).where(tags: { name: 'Lodging' }).pluck(:id))  # Filter by all item IDs
       .where('end_time > ?', @given_date) 
       .where.not('? BETWEEN start_time AND end_time', Time.zone.now)

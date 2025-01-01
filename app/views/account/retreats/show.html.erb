@@ -28,7 +28,7 @@
       <strong>Departing:</strong> <%= @retreat.departure.in_time_zone("America/Los_Angeles").strftime("%A %B #{@retreat.departure.in_time_zone("America/Los_Angeles").day.ordinalize} %-l:%M%P") %>
     </p>
     <p>
-      <strong>Details:</strong> <%= @retreat.demographics.map { |d| d.name }.to_sentence %> <%= pluralize((@retreat.departure&.to_date - @retreat.arrival&.to_date).to_i, "Night") %>, <%= pluralize(@meals.count, "Meal") %>
+      <strong>Details:</strong> <%= @retreat.demographics.map { |d| d.name }.to_sentence %> <%= pluralize((@retreat.departure&.in_time_zone('America/Los_Angeles').to_date - @retreat.arrival&.in_time_zone('America/Los_Angeles').to_date).to_i, "Night") %>, <%= pluralize(@meals.count, "Meal") %>
     </p>
 
     <p class="mt-4">

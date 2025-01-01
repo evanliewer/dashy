@@ -26,6 +26,8 @@ Rails.application.routes.draw do
     get '/waiver/:retreat' => 'home#waiver', as: 'waiver'
     post 'waiver/create_public_waiver', to: 'home#create_public_waiver', as: 'create_public_waiver'
     get 'thank_you' => 'home#thank_you', as: 'thank_you'
+    get 'retreats_json_api/' => 'home#retreats_json_api', as: 'retreats_json_api'
+    get 'reservations_json_api/' => 'home#reservations_json_api', as: 'reservations_json_api'
     # Standalone routes for public medform actions
   #get 'medform/new', to: 'medform#new_public', as: :new_public_medform
 
