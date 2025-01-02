@@ -28,6 +28,7 @@ class Item < ApplicationRecord
   validates :name, presence: true
   validates :location, scope: true
   validates :items_area, scope: true
+  validates :abbreviation, length: { maximum: 5, message: " must be 5 letters or fewer" }
   # 🚅 add validations above.
 
   after_validation :remove_layout, if: :layout_removal?

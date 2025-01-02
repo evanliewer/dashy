@@ -15,3 +15,7 @@ end
 task :set_internal => :environment do
   circuitree = Circuitree::ApiDownload.set_internal
 end
+
+task :create_item_abbreviations => :environment do
+  circuitree = Circuitree::ApiDownload.create_item_abbreviations
+end

@@ -12,6 +12,7 @@ json.extract! item,
   :beds,
   :tag_ids,
   :items_area_id,
+  :abbreviation,
   # 🚅 super scaffolding will insert new fields above this line.
   :created_at,
   :updated_at

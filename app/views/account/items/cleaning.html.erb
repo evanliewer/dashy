@@ -1,0 +1,52 @@
+
+
+
+<div class="grid grid-cols-1 gap-4 w-full mt-4">
+  <div class="flex w-full p-4 flex-col rounded-lg bg-white shadow-sm border border-slate-200">
+    <h1 class="text-center font-bold text-xl">This Week</h1>
+    <div class="flex items-center gap-4 text-slate-800">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+<div class="grid grid-cols-1 md:grid-cols-4 gap-4 w-full mt-4">
+
+   <div class="flex w-full p-4 flex-col rounded-lg bg-white shadow-sm border border-slate-200">
+      <h1 class="text-center font-bold text-xl">This Week</h1>
+      <div class="flex items-center gap-4 text-slate-800">
+        WORDS
+      </div>
+    </div>
+
+<% days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"] %>
+<% most_recent_sunday = Date.today.beginning_of_week(:sunday) %>
+<% next_saturday = most_recent_sunday.end_of_week(:sunday) %>
+
+<% (most_recent_sunday..next_saturday).each do |date| %>
+  <div class="flex w-full p-4 flex-col rounded-lg bg-white shadow-sm border border-slate-200">
+    <h1 class="text-center font-bold text-xl"><%= date.strftime("%A %b #{date.day.ordinalize}") %></h1>
+    <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 mt-4 text-slate-800">
+      <% Reservation.joins(item: :tags).where(tags: { name: 'Lodging' }).where(start_time: date.all_day).each do |reservation| %>
+        <p>
+          <% if reservation.item.clean == true %>
+           <%= link_to reservation&.item&.id, root_path, class: "button button-warning button-smaller block text-center", style: "background-color: #81C784; color: #000;" %>
+          <% else %>
+           <%= link_to reservation&.item&.id, root_path, class: "button button-warning button-smaller block text-center", style: "background-color: #FF6B6B; color: #000;" %>
+          <% end %> 
+        </p>
+      <% end %>
+    </div>
+  </div>
+<% end %>
+
+
+
+
+</div>
+
+

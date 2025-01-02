@@ -1,0 +1,10 @@
+
+  <%= render 'account/shared/menu/item', {
+    url: account_team_cleaning_path(team_id: current_team.id, date: Date.today),
+    label: "Cleaning",
+  } do |p| %>
+    <% p.icon do %>
+      <i class="fal fa-solid fa-bed"></i>
+    <% end %>
+  <% end %>
+

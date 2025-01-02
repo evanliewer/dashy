@@ -543,7 +543,13 @@ def self.set_internal
   end
 end
 
-
+def self.create_item_abbreviations
+  Item.all.each do |item|
+    if item.abbreviation.blank?
+      item.update(abbreviation: item.name.to_s[0, 5]) # Take the first 5 characters of the name
+    end
+  end
+end
 
 
 

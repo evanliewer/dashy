@@ -38,6 +38,8 @@ class Retreat < ApplicationRecord
   # 🚅 add scopes above.
 
   validates :name, presence: true
+  validates :arrival, presence: true
+  validates :departure, presence: true
   validates :organization, scope: true
   # 🚅 add validations above.
   after_update :notify_group_size_changes

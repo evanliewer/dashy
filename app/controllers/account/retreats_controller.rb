@@ -211,8 +211,7 @@ class Account::RetreatsController < Account::ApplicationController
             id: retreat.id,
             start_time: retreat.arrival,
             end_time: retreat.departure,
-            title: "#{retreat.internal && retreat.description.present? ? retreat.description : retreat.name} (#{retreat.actual_count || 'N/A'})",
-
+            title: "#{retreat&.name} (#{retreat.actual_count || 'N/A'})",
             location: retreat.locations.first.name
           }
         end

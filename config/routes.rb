@@ -93,6 +93,7 @@ Rails.application.routes.draw do
         get 'calendar' => 'retreats#calendar', as: 'calendar'
         get 'daily_counts' => 'retreats#daily_counts', as: 'daily_counts'
         get '/lodging' => 'items#lodging', as: 'lodging'
+        get '/cleaning' => 'items#cleaning', as: 'cleaning'
         get 'schedule_json' => 'reservations#schedule_json', as: 'schedule_json'
         get 'calendar_json' => 'reservations#calendar_json', as: 'calendar_json'
         get 'retreat_calendar_json' => 'retreats#calendar_json', as: 'retreat_calendar_json'

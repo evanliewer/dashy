@@ -13,6 +13,7 @@
     <td><%= item.tags.map{|tag| tag.name}.to_sentence %></td>
 
     <td><%= render 'shared/attributes/belongs_to', attribute: :items_area %></td>
+    <td><%= render 'shared/attributes/text', attribute: :abbreviation %></td>
     <%# 🚅 super scaffolding will insert new fields above this line. %>
     <td class="buttons">
       <% unless hide_actions %>

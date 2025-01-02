@@ -115,6 +115,11 @@ class Account::ItemsController < Account::ApplicationController
       .order('item_id, start_time ASC')  # First order by item_id, then by start_time
   end
 
+  def cleaning
+    @team = current_team
+    @item = Item.last
+  end
+
   private
 
   if defined?(Api::V1::ApplicationController)

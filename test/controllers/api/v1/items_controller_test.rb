@@ -43,6 +43,7 @@ class Api::V1::ItemsControllerTest < Api::Test
     assert_equal item_data['layout'], rails_blob_path(@item.layout) unless controller.action_name == 'create'
     assert_equal_or_nil item_data['tag_ids'], item.tag_ids
     assert_equal_or_nil item_data['items_area_id'], item.items_area_id
+    assert_equal_or_nil item_data['abbreviation'], item.abbreviation
     # 🚅 super scaffolding will insert new fields above this line.
 
     assert_equal item_data["team_id"], item.team_id
@@ -103,6 +104,7 @@ class Api::V1::ItemsControllerTest < Api::Test
       item: {
         name: 'Alternative String Value',
         description: 'Alternative String Value',
+        abbreviation: 'Alternative String Value',
         # 🚅 super scaffolding will also insert new fields above this line.
       }
     }
@@ -116,6 +118,7 @@ class Api::V1::ItemsControllerTest < Api::Test
     @item.reload
     assert_equal @item.name, 'Alternative String Value'
     assert_equal @item.description, 'Alternative String Value'
+    assert_equal @item.abbreviation, 'Alternative String Value'
     # 🚅 super scaffolding will additionally insert new fields above this line.
 
     # Also ensure we can't do that same action as another user.
