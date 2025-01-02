@@ -7,3 +7,11 @@ end
 task :circuitree_download => :environment do
   circuitree = Circuitree::ApiDownload.circuitree_download
 end
+
+task :program_download => :environment do
+  circuitree = Circuitree::ApiDownload.program_download
+end
+
+task :set_internal => :environment do
+  circuitree = Circuitree::ApiDownload.set_internal
+end

@@ -15,11 +15,37 @@
         choices: @reservation.valid_retreats.map { |retreat| [retreat.label_string, retreat.id] } %>
       <% end %>
 
+      <% if params[:item_id].present? %>
+        <%= form.hidden_field :item_id, value: params[:item_id] %>
+        
+       <div class="col-span-1 md:col-span-4">
+  <div>
+    <div>
+      <label class="block" for="reservation_notes">Item</label>
+    </div>
+
+    <div class="mt-1.5">
+      <input 
+        id="reservation_item_id" 
+        class="block w-full rounded-md shadow-sm font-light dark:bg-slate-800 dark:text-slate-300 text-base md:text-sm disabled:bg-slate-200 disabled:dark:bg-slate-700 focus:ring-primary-500 focus:border-primary-500 border-slate-300 dark:border-slate-900" 
+        type="text" 
+        name="reservation[item_id]" 
+        value="<%= Item.find(params[:item_id]).name %>"
+        readonly >
+      
+    </div>
+  </div>
+</div>
+
+      <% else %>
         <div class="grid grid-cols-1 md:grid-cols-6 gap-6">
           <div class="col-span-1 md:col-span-5"><%= render 'shared/fields/super_select', method: :item_id, options: {}, other_options: {search: true}, html_options: {},
         choices: @reservation.valid_items.map { |item| [item.label_string, item.id] } %> </div>
           <div class="col-span-1 md:col-span-1"><%= render 'shared/fields/text_field', method: :quantity %></div>
         </div>
+      <% end %>
+
+        
 
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
         <div class="col-span-1"><%= render 'shared/fields/date_and_time_field', method: :start_time %></div>
@@ -27,7 +53,7 @@
       </div> 
 
         <div class="grid grid-cols-1 md:grid-cols-6 gap-6">
-          <div class="col-span-1 md:col-span-4"><%= render 'shared/fields/text_field', method: :notes %></div>
+          <div class="col-span-1 md:col-span-6"><%= render 'shared/fields/text_field', method: :notes %></div>
           <div class="col-span-1 md:col-span-2"><%# render 'shared/fields/buttons', method: :exclusive %></div>
         </div>
 

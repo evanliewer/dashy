@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_12_13_223550) do
+ActiveRecord::Schema[7.2].define(version: 2025_01_01_221332) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -519,6 +519,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_13_223550) do
     t.string "dining_style"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "program_event", default: false
     t.index ["organization_id"], name: "index_retreats_on_organization_id"
     t.index ["team_id"], name: "index_retreats_on_team_id"
   end
@@ -660,6 +661,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_13_223550) do
     t.string "circuitree_api"
     t.string "groups_query"
     t.string "reservation_download"
+    t.string "programs_query"
   end
 
   create_table "users", id: :serial, force: :cascade do |t|

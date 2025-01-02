@@ -9,6 +9,7 @@ class Account::TeamsController < Account::ApplicationController
       :circuitree_api,
       :groups_query,
       :reservation_download,
+      :programs_query,
       # 🚅 super scaffolding will insert new fields above this line.
     ]
   end

@@ -311,31 +311,21 @@ module Circuitree
 
  def self.program_download(team = nil, year = nil)
     Team.all.each do |team|
-     puts "Begin CT Download for #{team.name}"
-     start_date = Date.today
-     end_date = Date.today + 50.days
-
+     puts "Begin Program Event Download for #{team.name}"
      puts "CTquery method from CT library module"
      url = "https://api.circuitree.com/Exports/ExecuteQuery.json"
    
      paramArray = []
 
      param = {
-      'ParameterID' => 8,
-      'ParameterValue' => start_date
+      'ParameterID' => 7,
+      'ParameterValue' => Date.today.year
         }
-     paramArray << param   
-
-     param = {
-      'ParameterID' => 9,
-      'ParameterValue' => end_date
-        } 
-     paramArray << param  
-  
+     paramArray << param     
      
      data = {
         'ApiToken' => team.circuitree_api,
-        'ExportQueryID' =>  team.groups_query,
+        'ExportQueryID' =>  team.programs_query,
         'QueryParameters' => paramArray
       }
 
@@ -347,14 +337,14 @@ module Circuitree
       res = http.request(req)
       ct_results = JSON.parse(res.body)
 
-        puts "Starting Itinerary Download"
+        puts "Starting Program Download"
         begin
            ct_results.each do |key,value|
             if key == "Results"
               JSON.parse(value).each do |val|
-                puts "--------------------~~~~~ " + val['GroupName'] + " ~~~~~---------------------------"
+                puts "--------------------~~~~~ " + val['EventName'] + " ~~~~~---------------------------"
                 begin
-                 puts "start itinerary search and save"
+                 puts "start Event search and save"
                  retreat = Retreat.find_or_initialize_by(:team_id => team.id, :id => val['ItineraryID'].to_i)
                  #unless retreat.import_lock == true
                    retreat.name = val['EventName'].to_s
@@ -373,43 +363,26 @@ module Circuitree
                    end 
                    
                    retreat.contract_count = val['GuestCount'].to_i
+                   retreat.program_event = true
                    retreat.id = val['EventID'].to_i
                    
 
 
-                   ##Save Organization 
-                   organization = Organization.find_or_create_by(:team_id => team.id, :name => val['GroupName'].to_s)       
-                   organization.name = val['GroupName'].to_s
-                   organization.save!
-                   retreat.organization_id = organization.id 
+                 
                    retreat.save(validate: false) 
-                  # retreat.versions.last.update_attributes!(:whodunnit => 1) ##Havent tested
-
-                   puts "Arrival: " + retreat.arrival.strftime("%A %B #{retreat.arrival.day.ordinalize} %-l%P")
-                   puts "Departure: " + retreat.departure.strftime("%A %B #{retreat.departure.day.ordinalize}  %-l%P")
-                   puts "Guest Contract Count: " + retreat.contract_count.to_s
-                   puts "ItineraryStatus: " + retreat.active.to_s
-              
-
-
-
 
                    ##Save Location
                     location = Location.find_or_create_by(:team_id => team.id, :name => val['Location'].to_s) do |l|
                       l.initials = val['Location'].to_s[0, 2].upcase
                       l.save
                     end
+                    retreat_location = Retreats::LocationTag.find_or_create_by(retreat_id: retreat.id, location_id: location.id)
+                    retreat_location.save!
+                    puts "Location: " + retreat_location.location.name
 
                 
-
-
-
-                  end
-                 
-                 
-                 
                 rescue => ex
-                  puts "Not a successful Itinerary Download"
+                  puts "Not a successful Program Download"
                   puts ex.message
                 end   
               end   ##JSON.parse 
@@ -418,10 +391,7 @@ module Circuitree
         rescue => ex
           puts ex.message
         end 
-      puts "Completed Program Events Download"
-    
-
-      puts "Success"
+      puts "Success Completed Program Events Download"
   end 
  end #Program Events Download 
 
@@ -540,6 +510,45 @@ module Circuitree
        puts "Error in Reservation Download"
     end
   end
+
+def self.set_internal
+    Retreat.find_each do |retreat|
+    # Check if the retreat has a tag named "internal"
+    if retreat.demographics.exists?(name: 'Internal')
+      puts "Processing Retreat ##{retreat.id}: Internal Group"
+
+      # Find or create the team associated with the retreat
+      team = retreat.team
+      next unless team  # Skip if the retreat does not have a team
+
+      # Find or create the "Internal" demographic for the team
+      internal = Demographic.find_or_create_by!(team_id: team.id, name: 'Internal')
+
+      # Tag the retreat with the "Internal" demographic
+      retreat_demographic = Retreats::DemographicTag.find_or_create_by(
+        retreat_id: retreat.id,
+        demographic_id: internal.id
+      )
+
+      # Set the `internal` flag to true and save the retreat
+      retreat.internal = true
+      if retreat.save
+        puts "Updated Retreat ##{retreat.id} as Internal."
+      else
+        puts "Failed to update Retreat ##{retreat.id}: #{retreat.errors.full_messages.join(', ')}"
+      end
+    else
+      puts "Retreat ##{retreat.id} does not have the 'internal' tag."
+    end
+  end
+end
+
+
+
+
+
+
+
 
 
 

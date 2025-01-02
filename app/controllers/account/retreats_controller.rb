@@ -30,7 +30,7 @@ class Account::RetreatsController < Account::ApplicationController
         @retreats = Retreat.where('arrival > ?', Date.today.beginning_of_day).where(active: true).where(internal: false).order(:arrival).limit(50)
       end
     else 
-      @retreats = Retreat.where('arrival > ?', Date.today.beginning_of_day).where(active: true).where(internal: false).order(:arrival).limit(50)
+      @retreats = Retreat.where('arrival > ?', Date.today.beginning_of_day).where(active: true).where.not(internal: true).order(:arrival).limit(50)
     end  
     @next_7 = Retreat.where(arrival: Date.today.beginning_of_day..(Date.today + 7.days).end_of_day).where(active: true).order(:arrival)
 
@@ -202,16 +202,17 @@ class Account::RetreatsController < Account::ApplicationController
                    Retreat.joins(:locations).where(locations: { name: location }).where(internal: false)
                  else
                    Retreat.where(internal: false)
-                 end
+                 end            
     respond_to do |format|
       format.json do
         # Explicitly convert to array before rendering
-        transformed_retreats = @retreats.map do |retreat|
+        transformed_retreats = @retreats.map do |retreat| 
           {
             id: retreat.id,
             start_time: retreat.arrival,
             end_time: retreat.departure,
-            title: "#{retreat&.name} (#{retreat.actual_count || 'N/A'})",
+            title: "#{retreat.internal && retreat.description.present? ? retreat.description : retreat.name} (#{retreat.actual_count || 'N/A'})",
+
             location: retreat.locations.first.name
           }
         end

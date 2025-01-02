@@ -26,6 +26,12 @@ en:
         heading: *reservation_download
         api_title: *reservation_download
         api_description: *reservation_download
+      programs_query:
+        _: &programs_query Programs Query
+        label: *programs_query
+        heading: *programs_query
+        api_title: *programs_query
+        api_description: *programs_query
       # 🚅 super scaffolding will insert new fields above this line.
   activerecord:
     attributes:
@@ -35,4 +41,5 @@ en:
         circuitree_api: *circuitree_api
         groups_query: *groups_query
         reservation_download: *reservation_download
+        programs_query: *programs_query
         # 🚅 super scaffolding will insert new activerecord attributes above this line.

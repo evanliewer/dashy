@@ -6,6 +6,10 @@
 
 puts "🌱 Generating global seeds."
 
+Team.all.each do |team|
+  Retreat.find_or_create_by(team_id: team.id, id: 99, name: "Dashboard Reservation")
+end  
+
 # Check whether the Zapier app has been deployed.
 zapier_app_id = begin
   JSON.parse(File.read("zapier/.zapierapprc")).dig("id")

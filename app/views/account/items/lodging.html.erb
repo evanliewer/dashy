@@ -36,7 +36,7 @@
         </td>
         <td>
           <% if reservation.start_time.future? %>
-            Reserve
+            <%= link_to "Reserve", new_account_team_reservation_path(team_id: current_team.id, retreat_id: 99, item_id: reservation.item.id) %>
           <% end %>
 
         </td>  

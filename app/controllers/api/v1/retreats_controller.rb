@@ -56,6 +56,7 @@ if defined?(Api::V1::ApplicationController)
           :nps,
           :debrief,
           :dining_style,
+          :program_event,
           # 🚅 super scaffolding will insert new fields above this line.
           *permitted_arrays,
           location_ids: [],
