@@ -9,6 +9,21 @@ class Account::ReservationsController < Account::ApplicationController
       @reservations = Reservation.includes([:retreat, :item]).joins(:item => :tags).where(:tags => {:schedulable => true}).where(team_id: current_team.id).where(retreat_id: params[:retreat]).where(items: { active: true}).distinct
     end 
     delegate_json_to_api
+
+    Reservation.all.each do |reservation|
+    begin
+      if reservation.planned_cleaning_date.blank?
+        puts "Retreat: " + reservation.retreat_id.to_s
+        reservation.update!(planned_cleaning_date: reservation.start_time.to_date)
+        puts "Updated Reservation ID #{reservation.id} with planned_cleaning_date: #{reservation.start_time.to_date}"
+      end
+    rescue => ex
+      puts ex.full_message
+      puts "REservation: " + reservation.id.to_s + " Retreat: " + reservation.retreat_id.to_s
+      puts ex.message
+    end  
+  
+    end 
   end
 
   def schedule_json
@@ -165,12 +180,12 @@ class Account::ReservationsController < Account::ApplicationController
     head :ok
   end
 
-  def update_notes
+  def update_notes 
     100.times do 
-      puts "Params received: #{params.inspect}"
+      puts "*********"
     end  
     @reservation = Reservation.find(params[:reservation_id]) # Find reservation by ID
-    if @reservation.update(notes: params[:notes], start_time: params[:start_time], end_time: params[:end_time])
+    if @reservation.update(planned_cleaning_date: params[:planned_cleaning_date])
       render json: { success: true, message: 'Reservation updated successfully!' }
     else
       render json: { success: false, errors: @reservation.errors.full_messages }, status: 422
@@ -187,6 +202,7 @@ class Account::ReservationsController < Account::ApplicationController
   def process_params(strong_params)
     assign_date_and_time(strong_params, :start_time)
     assign_date_and_time(strong_params, :end_time)
+    assign_date(strong_params, :planned_cleaning_date)
     # 🚅 super scaffolding will insert processing for new fields above this line.
   end
 end

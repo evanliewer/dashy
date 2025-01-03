@@ -120,6 +120,12 @@ en:
         api_description: *items_option_id
         placeholder: None
       items_option: *items_option
+      planned_cleaning_date:
+        _: &planned_cleaning_date Planned Cleaning Date
+        label: *planned_cleaning_date
+        heading: *planned_cleaning_date
+        api_title: *planned_cleaning_date
+        api_description: *planned_cleaning_date
       # 🚅 super scaffolding will insert new fields above this line.
       created_at:
         _: &created_at Added
@@ -189,6 +195,7 @@ en:
         active: *active
         dining_style: *dining_style
         items_option_id: *items_option_id
+        planned_cleaning_date: *planned_cleaning_date
         # 🚅 super scaffolding will insert new activerecord attributes above this line.
         created_at: *created_at
         updated_at: *updated_at

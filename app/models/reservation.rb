@@ -22,12 +22,12 @@ class Reservation < ApplicationRecord
   validates :name, presence: true
   validates :start_time, presence: true
   validates :end_time, presence: true
-  validates :retreat, scope: true
+  validates :retreat, presence: true
   validates :item, scope: true
   validates :user, scope: true
   before_validation :set_defaults
-  validates :items_option, scope: true
-  validate :no_conflicting_reservations
+  #validates :items_option, scope: true
+ # validate :no_conflicting_reservations
   validate :end_time_after_start_time
   # 🚅 add validations above.
   after_save :reservation_update_notification

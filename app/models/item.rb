@@ -69,7 +69,7 @@ class Item < ApplicationRecord
   end
 
   def exclusivable?
-    tags.where(exclusivable: true).any?
+   # tags.where(exclusivable: true).any?
   end
 
   def cleanable?

@@ -22,25 +22,21 @@
 <div class="grid grid-cols-1 md:grid-cols-4 gap-4 w-full mt-4">
    <div class="flex w-full p-4 flex-col rounded-lg bg-white shadow-sm border border-slate-200">
     <h1 class="text-center font-bold text-xl">Week Details</h1>
-    <div class="drag-container flex items-center gap-4 text-slate-800" id="unassigned-container">
-      <button class="button button-warning button-smaller block text-center" style="background-color: #81C784; color: #000;">Button 1</button>
-      <button class="button button-warning button-smaller block text-center" style="background-color: #FF6B6B; color: #000;">Button 2</button>
+    <div class="flex items-center gap-4 text-slate-800" id="unassigned-container">
+     
     </div>
   </div>
   <% (most_recent_sunday..next_saturday).each do |date| %>
     <div class="flex w-full p-4 flex-col rounded-lg bg-white shadow-sm border border-slate-200">
       <h1 class="text-center font-bold text-xl"><%= date.strftime("%A %b #{date.day.ordinalize}") %></h1>
       <div class="drag-container grid grid-cols-2 sm:grid-cols-3 gap-4 mt-4 text-slate-800" data-date="<%= date.to_s %>">
-         <p>  <button class="button button-warning button-smaller block text-center" style="background-color: #81C784; color: #000;">
-                Firest
-              </button>
-        </p>  
-        <% Reservation.joins(item: :tags).where(tags: { name: 'Lodging' }).where(start_time: date.all_day).each do |reservation| %>
+        <%# Reservation.joins(item: :tags).where(tags: { name: 'Lodging' }).where(start_time: date.all_day).each do |reservation| %>
+        <% Reservation.joins(item: :tags).where(tags: { name: 'Lodging' }).where(planned_cleaning_date: date.all_day).each do |reservation| %>
          <p data-reservation-id="<%= reservation.id %>">
           <% if reservation.item.clean %>
-            <%= link_to reservation.obfuscated_id, [:account, reservation], class: "button button-warning button-smaller block text-center", style: "background-color: #81C784; color: #000;" %>
+            <%= link_to reservation&.item&.abbreviation, [:account, reservation], class: "button button-warning button-smaller block text-center", style: "background-color: #81C784; color: #000; border: 2px solid green;" %>
           <% else %>
-            <%= link_to reservation.obfuscated_id, [:account, reservation], class: "button button-warning button-smaller block text-center", style: "background-color: #FF6B6B; color: #000;" %>
+            <%= link_to reservation&.item&.abbreviation, [:account, reservation], class: "button button-warning button-smaller block text-center", style: "background-color: #FF6B6B; color: #000;" %>
           <% end %>
         </p>
         <% end %>
@@ -69,6 +65,7 @@
             'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
           },
           body: JSON.stringify({
+            planned_cleaning_date: newDate,
             notes: newDate,
            // start_time: `${newDate}T00:00:00Z`,
            // end_time: `${newDate}T23:59:59Z`
