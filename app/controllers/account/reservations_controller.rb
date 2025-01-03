@@ -1,5 +1,6 @@
 class Account::ReservationsController < Account::ApplicationController
   account_load_and_authorize_resource :reservation, through: :team, through_association: :reservations
+    load_and_authorize_resource :reservation
 
   # GET /account/teams/:team_id/reservations
   # GET /account/teams/:team_id/reservations.json
@@ -162,6 +163,18 @@ class Account::ReservationsController < Account::ApplicationController
     reservation.update(start_time: params[:start], end_time: params[:end])
     puts "Ending"
     head :ok
+  end
+
+  def update_notes
+    100.times do 
+      puts "Params received: #{params.inspect}"
+    end  
+    @reservation = Reservation.find(params[:reservation_id]) # Find reservation by ID
+    if @reservation.update(notes: params[:notes], start_time: params[:start_time], end_time: params[:end_time])
+      render json: { success: true, message: 'Reservation updated successfully!' }
+    else
+      render json: { success: false, errors: @reservation.errors.full_messages }, status: 422
+    end
   end
 
 

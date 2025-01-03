@@ -118,7 +118,9 @@ Rails.application.routes.draw do
             get :kitchen
           end
         end
-        resources :reservations
+        resources :reservations do
+          patch 'update_notes'
+        end
         namespace :items do
           resources :tags
           resources :options, except: collection_actions, concerns: [:sortable]
