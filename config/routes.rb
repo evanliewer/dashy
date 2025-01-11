@@ -99,6 +99,7 @@ Rails.application.routes.draw do
         get 'retreat_calendar_json' => 'retreats#calendar_json', as: 'retreat_calendar_json'
         get 'daily_counts_json' => 'retreats#daily_counts_json', as: 'daily_counts_json'
         get 'mark_notification_read' => 'notifications#mark_notification_read', as: 'mark_notification_read'
+        patch '/reservations/:item_id/toggle_clean', to: 'reservations#toggle_clean', as: 'toggle_clean_item'
 
         resources :demographics, concerns: [:sortable]
         resources :departments, concerns: [:sortable]
@@ -119,7 +120,7 @@ Rails.application.routes.draw do
           end
         end
         resources :reservations do
-          patch 'update_notes'
+          patch 'update_planned_date'
         end
         namespace :items do
           resources :tags

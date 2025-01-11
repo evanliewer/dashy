@@ -56,7 +56,7 @@ en:
           yes: "Yes"
           no: "No"
       warning_alert:
-        _: &warning_alert Warning Alert
+        _: &warning_alert Days Before Warning Alert
         label: *warning_alert
         heading: *warning_alert
         api_title: *warning_alert

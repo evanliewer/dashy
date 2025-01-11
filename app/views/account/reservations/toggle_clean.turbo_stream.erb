@@ -1,0 +1,6 @@
+<%= turbo_stream.replace "item_status_#{@item.id}" do %>
+  <div>
+    <strong>Updated status for Item ID <%= @item.id %></strong>
+    <p>Status: <%= @item.clean ? 'Clean' : 'Dirty' %></p>
+  </div>
+<% end %>

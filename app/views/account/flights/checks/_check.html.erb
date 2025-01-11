@@ -4,17 +4,22 @@
 <% hide_actions ||= false %>
 <% hide_back ||= false %>
 
+
+<%# to jive with Check and Retreat, for all instances of the word Check here, its really a retreat %>
 <% with_attribute_settings object: check do %>
   <tr data-id="<%= check.id %>">
     <%= render "shared/tables/checkbox", object: check %>
+    <% if false %>
     <td><%= render 'shared/attributes/belongs_to', attribute: :retreat %></td>
+    <td><%= check.retreat.arrival.strftime("%A %B #{check.retreat.arrival.day.ordinalize}") %></td>
+    <td><%= check.retreat.departure.strftime("%A %B #{check.retreat.departure.day.ordinalize}") %></td>
     <td><%= render 'shared/attributes/belongs_to', attribute: :flight %></td>
     <td><%= check.retreat.planners.present? ? check.retreat.planners.map { |p| p.full_name }.to_sentence : "Not Assigned" %></td>
     <td>
       <% if check.completed_at.present? %>
            <%= check.completed_at.strftime("%B #{check.completed_at.day.ordinalize}") %>
           <% else %>
-            <% time_until_warning = (check.retreat.arrival.to_date - Time.now.to_date).to_i - check.flight.warning.to_i %>
+            <% time_until_warning = (check.retreat.arrival.to_date - Time.now.to_date).to_i - check.flight.warning_alert.to_i %>
             <% if time_until_warning > 0 %>
              Due in <%= pluralize(time_until_warning,'day') %>
             <% else %>
@@ -26,15 +31,43 @@
             <% end %> 
           <% end %>  
     </td>
+    <% end %>
+    <td>
+      <%= render 'shared/attributes/belongs_to', attribute: :organization, url: [:account, check] %>
+      <br/>
+      <%= check.planners.present? ? check.planners.map { |p| p.full_name }.to_sentence : "Not Assigned" %>
+      
+    </td>
+    <td><%= check.arrival.strftime("%A %B #{check.arrival.day.ordinalize}") %><br/><%= check.departure.strftime("%A %B #{check.departure.day.ordinalize}") %></td>
+    <td><%= Flights::Check.joins(:flight).where(retreat_id: check.id).where(flights: { preflight: true }).where.not(completed_at: nil).count.to_s %>/<%= Flights::Check.joins(:flight).where(retreat_id: check.id).where(flights: { preflight: true }).count.to_s %></td>
+
+
+    <td>
+      <% check.flights_checks.each do |check| %>
+  <% if check.completed_at.present? %>
+    <%= check.completed_at.strftime("%B #{check.completed_at.day.ordinalize}") %>
+  <% else %>
+    <% days_until_warning = (check.retreat.arrival.to_date - Date.current).to_i - check.flight.warning_alert.to_i %>
+    <% if days_until_warning > 0 %>
+      Due in <%= pluralize(days_until_warning, 'day') %>
+    <% elsif days_until_warning == 0 %>
+      <div class="text-red-500">Due Today</div>
+    <% else %>  
+      <div class="text-red-500"><%= check.flight.name %> <%= pluralize(days_until_warning.abs, 'day') %> overdue</div>
+    <% end %> 
+  <% end %> 
+<% end %>
+
+    </td>
+    <td>1</td>
+    <td>2</td>
     <%# 🚅 super scaffolding will insert new fields above this line. %>
     <td class="buttons">
       <% unless hide_actions %>
         <% if can? :edit, check %>
           <%= link_to t('.buttons.shorthand.edit'), [:edit, :account, check], class: 'button-secondary button-smaller' %>
         <% end %>
-        <% if can? :destroy, check %>
-          <%= button_to t('.buttons.shorthand.destroy'), [:account, check], method: :delete, data: { confirm: t('.buttons.confirmations.destroy', model_locales(check)) }, class: 'button-secondary button-smaller' %>
-        <% end %>
+        
         <%# 🚅 super scaffolding will insert new action model buttons above this line. %>
       <% end %>
     </td>

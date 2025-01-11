@@ -1,6 +1,6 @@
 en:
   flights/checks: &checks
-    label: &label Checks
+    label: &label Flight Checks
     breadcrumbs:
       label: *label
     navigation:
@@ -84,7 +84,7 @@ en:
       contexts:
         team:
           header: Checks
-          description: Below is a list of Checks that have been added for %{team_name}.
+          description: Below is a list of Flight Checks that have been added for %{team_name}.
           description_empty: No Checks have been added for %{team_name}.
       fields: *fields
       buttons: *buttons

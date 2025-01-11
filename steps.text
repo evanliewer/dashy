@@ -222,3 +222,5 @@ rails g super_scaffold:field Team programs_query:text_field
 
 rails g super_scaffold:field Item abbreviation:text_field
 rails g super_scaffold:field Reservation planned_cleaning_date:date_field
+rails g super_scaffold:field Reservation planned_cleaning_team:text_field
+

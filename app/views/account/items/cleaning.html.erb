@@ -7,6 +7,7 @@
   <div class="flex w-full p-4 flex-col rounded-lg bg-white shadow-sm border border-slate-200">
     <h1 class="text-center font-bold text-xl">This Week</h1>
     <div class="flex items-center gap-4 text-slate-800">
+      
     </div>
   </div>
 </div>
@@ -23,13 +24,51 @@
    <div class="flex w-full p-4 flex-col rounded-lg bg-white shadow-sm border border-slate-200">
     <h1 class="text-center font-bold text-xl">Week Details</h1>
     <div class="flex items-center gap-4 text-slate-800" id="unassigned-container">
-     
+       <%= link_to(Item.first.clean ? 'Dirtyy' : 'Cleann', account_team_toggle_clean_item_path(team_id: current_team.id, item_id: Item.first.id), method: :patch, data: { turbo_frame: "item_#{Item.first.id}" }) %>
+
+
+  <% Item.all.limit(2).each do |item| %>
+<%= button_to account_team_toggle_clean_item_path(team_id: current_team.id, item_id: item.id), method: :patch, class: "btn" do %>
+  <%= item.clean ? 'Clean' : 'Dirty' %>
+<% end %>
+<% end %>
+
+
+
+                     
     </div>
   </div>
+
+  <div class="flex w-full p-4 flex-col rounded-lg bg-white shadow-sm border border-slate-200">
+  <h1 class="text-center font-bold text-xl">Week Details</h1>
+
+  <%= turbo_frame_tag "item_69" do %>
+    <div class="flex items-center gap-4 text-slate-800">
+      <%= link_to "Clean", account_team_toggle_clean_item_path(team_id: current_team.id, item_id: 69),
+                  method: :patch, data: { turbo_frame: "item_69" } %>
+
+      <%= button_to account_team_toggle_clean_item_path(team_id: current_team.id, item_id: 76),
+                    method: :patch, class: "btn", data: { turbo_frame: "item_76" } do %>
+        Dirty
+      <% end %>
+
+      <%= button_to account_team_toggle_clean_item_path(team_id: current_team.id, item_id: 79),
+                    method: :patch, class: "btn", data: { turbo_frame: "item_79" } do %>
+        Dirty
+      <% end %>
+    </div>
+  <% end %>
+</div>
+
+
+
   <% (most_recent_sunday..next_saturday).each do |date| %>
     <div class="flex w-full p-4 flex-col rounded-lg bg-white shadow-sm border border-slate-200">
       <h1 class="text-center font-bold text-xl"><%= date.strftime("%A %b #{date.day.ordinalize}") %></h1>
       <div class="drag-container grid grid-cols-2 sm:grid-cols-3 gap-4 mt-4 text-slate-800" data-date="<%= date.to_s %>">
+        <p>
+          <%= link_to "Drag Here", root_path, class: "button button-warning button-smaller block text-center", style: "background-color: #11C784; color: #000;" %>
+        </p>
         <%# Reservation.joins(item: :tags).where(tags: { name: 'Lodging' }).where(start_time: date.all_day).each do |reservation| %>
         <% Reservation.joins(item: :tags).where(tags: { name: 'Lodging' }).where(planned_cleaning_date: date.all_day).each do |reservation| %>
          <p data-reservation-id="<%= reservation.id %>">
@@ -58,7 +97,7 @@
       const newDate = target.getAttribute('data-date');
 
       if (reservationId && newDate) {
-        fetch(`/account/reservations/${reservationId}/update_notes`, {
+        fetch(`/account/reservations/${reservationId}/update_planned_date`, {
           method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',

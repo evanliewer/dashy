@@ -36,21 +36,22 @@
       <% end %>
 
       <% box.table do %>
-        <% if checks.any? %>
+        <% if @retreats.any? %>
           <table class="table">
             <thead>
               <tr>
                 <%= render "shared/tables/select_all" %>
                 <th><%= t('.fields.retreat.heading') %></th>
-                <th><%= t('.fields.flight.heading') %></th>
-                <th>Planner</th>
+                <th>Arrival</th>
+                <th>Pre-Flights</th>
+                <th>Overdue</th>
                 <th><%= t('.fields.completed_at.heading') %>/DUE</th>
                 <%# 🚅 super scaffolding will insert new field headers above this line. %>
                 <th class="text-right"></th>
               </tr>
             </thead>
             <tbody>
-              <%= render partial: 'account/flights/checks/check', collection: @checks %>
+              <%= render partial: 'account/flights/checks/check', collection: @retreats %>
             </tbody>
           </table>
         <% end %>

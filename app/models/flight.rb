@@ -16,6 +16,7 @@ class Flight < ApplicationRecord
 
   validates :name, presence: true
   validates :flights_timeframe, scope: true
+  validates :warning_alert, presence: true
   # 🚅 add validations above.
 
   # 🚅 add callbacks above.

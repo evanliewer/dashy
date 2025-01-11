@@ -2,16 +2,17 @@ class Public::HomeController < Public::ApplicationController
   # Redirect `/` to either `ENV["MARKETING_SITE_URL"]` or the sign-in page.
   # If you'd like to customize the action for `/`, you can remove this and define `def index ... end ` below.
 
+
  
    def index
     
     if params[:id].present? && params[:id].strip != ""
       @retreat = Retreat.find_by_obfuscated_id(params[:id])
-      unless @retreat
-        redirect_to new_account_user_path, alert: "Retreat not found." and return
+      unless @retreat   
+        redirect_to account_team_retreats_path(team_id: Team.first), alert: "Retreat not found." and return
       end
-    else
-      redirect_to new_account_user_path, alert: "Please log in to access this page." and return
+    else 
+      redirect_to account_team_retreats_path(team_id: Team.first), alert: "Retreat not found." and return
     end
 
     ActiveStorage::Current.url_options = {host: "https://campdashboard.s3.amazonaws.com"} 
@@ -27,8 +28,6 @@ class Public::HomeController < Public::ApplicationController
     @cabin_resources = Item.where(id: @cabin_ids).distinct
 
   
-    
-
     respond_to do |format|
      format.html { render layout: false }
      format.csv { send_data Item.to_csv(@cabin_resources), filename: "CabinAssignments-#{@retreat&.organization&.name}-#{@retreat.arrival.strftime("%B #{@retreat.arrival.day.ordinalize} %Y")}.csv" }          
@@ -119,7 +118,7 @@ class Public::HomeController < Public::ApplicationController
   end
 
   def medform_params
-    params.require(:medform).permit(:team_id, :name, :phone, :email, :dietary, :retreat_id, :dietary, :age, :gender, :emergency_contact_name, :emergency_contact_phone, :emergency_contact_relationship, :terms, :form_for)
+    params.require(:medform).permit(:team_id, :name, :phone, :email, :diet_id, :retreat_id, :age, :gender, :emergency_contact_name, :emergency_contact_phone, :emergency_contact_relationship, :terms, :form_for)
   end
 
   def game_show

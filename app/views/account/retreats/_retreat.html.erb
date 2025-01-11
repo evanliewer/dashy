@@ -70,7 +70,7 @@
                           <% overdue = 0 %>
                          <% flightchecks.where(completed_at: nil).each do |check| %>
                    
-                            <% time_until_warning = (retreat.arrival.to_date - Time.now.to_date).to_i - check.flight.warning.to_i %>
+                            <% time_until_warning = (retreat.arrival.to_date - Time.now.to_date).to_i - check.flight.warning_alert.to_i %>
                             <% if time_until_warning < 0 %>
 
                               <% overdue += 1 %>

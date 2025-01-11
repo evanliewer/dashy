@@ -1,0 +1,5 @@
+<div id="item_<%= item.id %>" class="p-4 border rounded-lg <%= item.clean ? 'bg-green-100' : 'bg-red-100' %>">
+  <%= button_to account_team_toggle_clean_item_path(team_id: current_team.id, item_id: item.id), method: :patch, class: "btn #{item.clean ? 'bg-green-500' : 'bg-red-500'}" do %>
+    <%= item.clean ? 'Clean' : 'Dirty' %>
+  <% end %>
+</div>

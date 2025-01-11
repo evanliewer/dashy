@@ -180,15 +180,23 @@ class Account::ReservationsController < Account::ApplicationController
     head :ok
   end
 
-  def update_notes 
-    100.times do 
-      puts "*********"
-    end  
+  def update_planned_date 
     @reservation = Reservation.find(params[:reservation_id]) # Find reservation by ID
     if @reservation.update(planned_cleaning_date: params[:planned_cleaning_date])
       render json: { success: true, message: 'Reservation updated successfully!' }
     else
       render json: { success: false, errors: @reservation.errors.full_messages }, status: 422
+    end
+  end
+
+  def toggle_clean
+    500.times do 
+      puts "$$$$$$$$$$$$$$$$$$$$$$$$$$$1"
+    end  
+    @item = Item.find(params[:item_id])
+    @item.update(clean: !@item.clean)
+    respond_to do |format|
+      format.turbo_stream
     end
   end
 

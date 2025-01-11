@@ -17,7 +17,6 @@
         <div class="col-span-1"><%= render 'shared/fields/super_select', method: :retreat_id, options: {}, other_options: {search: true}, html_options: {},
         choices: @medform.valid_retreats.map { |retreat| [retreat.label_string, retreat.id] } %></div>
       </div>
-      <%# render 'shared/fields/text_field', method: :dietary %>
       
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 mt-2">
         <div class="col-span-1"><%= render 'shared/fields/number_field', method: :age %></div>

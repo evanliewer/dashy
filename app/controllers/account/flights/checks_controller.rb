@@ -5,6 +5,10 @@ class Account::Flights::ChecksController < Account::ApplicationController
   # GET /account/teams/:team_id/flights/checks.json
   def index
     delegate_json_to_api
+    next_retreats = Retreat.order(:arrival).limit(10)
+    @checks = Flights::Check.where(retreat_id: next_retreats.select(:id)).distinct(:retreat_id)
+    @checks = Flights::Check.all.limit(10)
+    @retreats = Retreat.all.limit(4)
   end
 
   # GET /account/flights/checks/:id
