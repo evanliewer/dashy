@@ -5,9 +5,6 @@
 <% hide_back ||= false %>
 
 <% with_attribute_settings object: retreat do %>
-
-
-
               
             <%  flightchecks = Flights::Check.includes([:flight]).where(retreat_id: retreat.id) %>
                   <tr onclick="window.location='<%= url_for [:account, retreat] %>';" class="bg-white border-b">

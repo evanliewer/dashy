@@ -4,11 +4,33 @@ class Account::Flights::ChecksController < Account::ApplicationController
   # GET /account/teams/:team_id/flights/checks
   # GET /account/teams/:team_id/flights/checks.json
   def index
+    @group_retreats = Retreat.where.not(internal: true).order('arrival DESC')
+    @q = @group_retreats.ransack(params[:q])
+    @retreats = @q.result(distinct: true)
+
+    @event_planners = @retreats.flat_map { |retreat| retreat.planners&.ids }.compact.uniq
+
+    if params[:search].present?
+      case params[:search]
+      when "due_in_two_weeks"
+        @checks = Flights::Check.joins(:flight, :retreat)
+                            .where(completed_at: nil) # Exclude completed checks
+                            .where('(DATE(retreats.arrival) - DATE(?) - COALESCE(flights.warning_alert, 0)) BETWEEN 0 AND 14', Time.zone.today)
+      when "overdue"
+        @checks = Flights::Check.joins(:flight, :retreat).where(completed_at: nil).where('DATE(retreats.arrival) - DATE(?) - flights.warning_alert <= 0', Time.zone.today)
+      when "reset"
+        @checks = Flights::Check.all
+      else
+         @retreats = Retreat.joins(:planner_tags)
+                   .joins('INNER JOIN memberships ON retreats_planner_tags.planner_id = memberships.id')
+                   .where('memberships.user_first_name ILIKE ?', "#{params[:search]}")
+         @checks = Flights::Check.where(retreat: @retreats.ids)
+      end
+    else 
+      @checks = Flights::Check.joins(:retreat).order('retreats.arrival')
+    end 
+
     delegate_json_to_api
-    next_retreats = Retreat.order(:arrival).limit(10)
-    @checks = Flights::Check.where(retreat_id: next_retreats.select(:id)).distinct(:retreat_id)
-    @checks = Flights::Check.all.limit(10)
-    @retreats = Retreat.all.limit(4)
   end
 
   # GET /account/flights/checks/:id

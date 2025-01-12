@@ -254,7 +254,7 @@ module Circuitree
 
                   ##Save Demographic
 
-                  if val['Internal'] == "TRUE"
+                  if val['Internal'] == "TRUE" || val['GroupName'] == 'FH Ministry Partner'
                     puts "INTERNAL Group"
                     internal = Demographic.find_or_create_by!(:team_id => team.id, :name => "Internal") do |d|
                         d.save 
@@ -338,61 +338,79 @@ module Circuitree
       ct_results = JSON.parse(res.body)
 
         puts "Starting Program Download"
-        begin
-           ct_results.each do |key,value|
-            if key == "Results"
+          begin
+            ct_results.each do |key, value|
+              next unless key == "Results"
+
               JSON.parse(value).each do |val|
-                puts "--------------------~~~~~ " + val['EventName'] + " ~~~~~---------------------------"
+                puts "--------------------~~~~~ #{val['EventName']} ~~~~~---------------------------"
                 begin
-                 puts "start Event search and save"
-                 retreat = Retreat.find_or_initialize_by(:team_id => team.id, :id => val['ItineraryID'].to_i)
-                 #unless retreat.import_lock == true
-                   retreat.name = val['EventName'].to_s
-                   
-                   if Rails.env.production?
-                    retreat.arrival = DateTime.parse(val['ArrivalDateTime'])
-                    retreat.departure = DateTime.parse(val['DepartureDateTime'])
-                   else 
-                    puts "Development"
-                    arrivalDateTime = val['ArrivalDateTime'].to_datetime
-                    departureDateTime = val['DepartureDateTime'].to_datetime
-                    arrival = Time.now.in_time_zone("Pacific Time (US & Canada)")
-                    departure = Time.now.in_time_zone("Pacific Time (US & Canada)")
-                    retreat.arrival = arrival.change(:year => arrivalDateTime.year, :month => arrivalDateTime.month, :day => arrivalDateTime.day, :hour => arrivalDateTime.hour, :min => arrivalDateTime.min)
-                    retreat.departure = departure.change(:year => departureDateTime.year, :month => departureDateTime.month, :day => departureDateTime.day, :hour => departureDateTime.hour, :min => departureDateTime.min)
-                   end 
-                   
-                   retreat.contract_count = val['GuestCount'].to_i
-                   retreat.program_event = true
-                   retreat.id = val['EventID'].to_i
-                   
+                  puts "Start Event search and save"
+                  retreat = Retreat.find_by(id: val['EventID'].to_i)
+
+                  if retreat
+                    puts "Updating existing retreat: #{retreat.id}"
+                    retreat.update!(
+                      name: val['EventName'],
+                      arrival: DateTime.parse(val['ArrivalDateTime']),
+                      departure: DateTime.parse(val['DepartureDateTime']),
+                      contract_count: val['GuestCount'].to_i,
+                      program_event: true,
+                      internal: true
+                    )
+                  else
+                    puts "Creating new retreat."
+                    Retreat.create!(
+                      id: val['EventID'].to_i,
+                      team_id: team.id,
+                      name: val['EventName'],
+                      arrival: DateTime.parse(val['ArrivalDateTime']),
+                      departure: DateTime.parse(val['DepartureDateTime']),
+                      contract_count: val['GuestCount'].to_i,
+                      program_event: true,
+                      internal: true
+                    )
+                  end
+
+                  # Save Location
+                  location = Location.find_or_create_by(team_id: team.id, name: val['Location']) do |l|
+                    l.initials = val['Location'][0, 2].upcase
+                  end
+                  retreat_location = Retreats::LocationTag.find_or_create_by(retreat_id: retreat.id, location_id: location.id)
+                  retreat_location.save!
 
 
-                 
-                   retreat.save(validate: false) 
+                    internal = Demographic.find_or_create_by!(:team_id => team.id, :name => "Program Event") do |d|
+                        d.save 
+                    end    
+                    retreat_demographic = Retreats::DemographicTag.find_or_create_by(retreat_id: retreat.id, demographic_id: internal.id)
+                    retreat_demographic.save
 
-                   ##Save Location
-                    location = Location.find_or_create_by(:team_id => team.id, :name => val['Location'].to_s) do |l|
-                      l.initials = val['Location'].to_s[0, 2].upcase
-                      l.save
-                    end
-                    retreat_location = Retreats::LocationTag.find_or_create_by(retreat_id: retreat.id, location_id: location.id)
-                    retreat_location.save!
-                    puts "Location: " + retreat_location.location.name
+                    event_type = Demographic.find_or_create_by!(:team_id => team.id, :name => val['EventType']) do |d|
+                        d.save 
+                    end    
+                    retreat_demographic = Retreats::DemographicTag.find_or_create_by(retreat_id: retreat.id, demographic_id: event_type.id)
+                    retreat_demographic.save
 
-                
+                  
+
+
+                  puts "Location: #{retreat_location.location.name}"
+                  puts "Successful with #{retreat.name} it is an #{retreat.internal} retreat with id #{retreat.id}"
                 rescue => ex
                   puts "Not a successful Program Download"
                   puts ex.message
-                end   
-              end   ##JSON.parse 
-            end  ##if Key
-          end ## ct_results  
-        rescue => ex
-          puts ex.message
-        end 
-      puts "Success Completed Program Events Download"
-  end 
+                end
+              end
+            end
+          rescue => ex
+            puts ex.message
+          end
+          puts "Successfully completed Program Events Download"
+
+
+      end  
+
  end #Program Events Download 
 
 

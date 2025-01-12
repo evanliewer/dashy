@@ -22,6 +22,7 @@ class Retreat < ApplicationRecord
   has_many :comments, class_name: "Retreats::Comment", dependent: :destroy
   has_many :requests, class_name: "Retreats::Request", dependent: :destroy
   has_many :flights_checks, class_name: "Flights::Check", dependent: :destroy
+  has_many :medforms, dependent: :destroy
   # 🚅 add has_many associations above.
 
   # 🚅 add has_one associations above.
@@ -125,7 +126,11 @@ class Retreat < ApplicationRecord
     return unless retreat_start_date
 
     (retreat_start_date.to_date - Date.current).to_i
-end
+  end
+
+  def self.ransackable_attributes(auth_object = nil)
+    ["active", "actual_count", "arrival", "contract_count", "created_at", "debrief", "departure", "description", "dining_style", "id", "id_value", "internal", "name", "nps", "organization_id", "program_event", "team_id", "updated_at"]
+  end
 
 
 
