@@ -31,7 +31,9 @@ Rails.application.routes.draw do
     # Standalone routes for public medform actions
   #get 'medform/new', to: 'medform#new_public', as: :new_public_medform
 
-
+    # The root `/` path is routed to `Public::HomeController#index` by default. You can set it
+    # to whatever you want by doing something like this:
+    # root to: "my_new_root_controller#index"
   end
 
   namespace :webhooks do
@@ -51,6 +53,10 @@ Rails.application.routes.draw do
 
   namespace :account do
     shallow do
+      # The account root `/` path is routed to `Account::Dashboard#index` by default. You can set it
+      # to whatever you want by doing something like this:
+      # root to: "some_other_root_controller#index", as: "dashboard"
+
       # user-level onboarding tasks.
       namespace :onboarding do
         # routes for standard onboarding steps are configured in the `bullet_train` gem, but you can add more here.

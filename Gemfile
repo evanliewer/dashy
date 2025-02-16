@@ -9,7 +9,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 ruby(File.read(File.expand_path(".ruby-version", __dir__)))
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
-gem "rails", "~> 7.2.0"
+gem "rails", "~> 8.0.0"
 
 # The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
 gem "sprockets-rails"
@@ -117,7 +117,7 @@ end
 
 # We use a constant here so that we can ensure that all of the bullet_train-*
 # packages are on the same version.
-BULLET_TRAIN_VERSION = "1.12.0"
+BULLET_TRAIN_VERSION = "1.17.1"
 
 # Core packages.
 gem "bullet_train", BULLET_TRAIN_VERSION
@@ -132,7 +132,6 @@ gem "bullet_train-integrations-stripe", BULLET_TRAIN_VERSION
 
 # Optional support packages.
 gem "bullet_train-sortable", BULLET_TRAIN_VERSION
-gem "bullet_train-scope_questions", BULLET_TRAIN_VERSION
 gem "bullet_train-obfuscates_id", BULLET_TRAIN_VERSION
 
 # Core gems that are dependencies of gems listed above. Technically they
@@ -167,6 +166,12 @@ group :development do
 
   # For colorizing text in command line scripts.
   gem "colorize"
+
+  # derailed_benchmarks and stackprof are used to find opportunities for performance/memory improvements
+  # See the derailed_benchmarks docs for details: https://github.com/zombocom/derailed_benchmarks
+  gem "derailed_benchmarks"
+  # stackprof has some native components and it may be harder to compile locally, so we leave it as optional
+  # gem "stackprof"
 end
 
 group :test do
@@ -188,32 +193,53 @@ group :test do
   gem "knapsack_pro"
 end
 
+group :development, :test do
+  # A great debugger.
+  gem "pry"
+end
+
 group :production do
   # We suggest using Postmark for email deliverability.
-  gem "postmark-rails"
+  # gem "postmark-rails"
 
   # If you're hosting on Heroku, this service is highly recommended for autoscaling of dynos.
-  gem "rails_autoscale_agent"
+  # gem "rails_autoscale_agent"
 
   # Exception tracking, uptime monitoring, and status page service with a generous free tier.
-  gem "honeybadger"
+  # gem "honeybadger"
 
   # Another exception tracking service.
-  gem "sentry-ruby"
-  gem "sentry-rails"
-  gem "sentry-sidekiq"
+  # gem "sentry-ruby"
+  # gem "sentry-rails"
+  # gem "sentry-sidekiq"
 
   # Use S3 for Active Storage by default.
-  gem "aws-sdk-s3", require: false
+  # gem "aws-sdk-s3", require: false
 
+  # terser is used to compress assets during precompilation
   gem "terser"
 end
 
 # Use Ruby hashes as readonly datasources for ActiveRecord-like models.
 gem "active_hash"
 
-# A great debugger.
-gem "pry"
+# OPTIONAL BULLET TRAIN GEMS
+# This section lists Ruby gems that we used to include by default. In an effort to
+# reduce memory use we're not including these as hard dependencies anymore, but if
+# you want to use them you can uncoment them.
+
+# Microscope adds useful scopes targeting ActiveRecord `boolean`, `date` and `datetime` attributes.
+# https://github.com/mirego/microscope
+# gem "microscope"
+
+# The bullet_train-action_models gem can use OpenAI during the CSV import process to
+# automatically match column names to database attributes.
+# https://github.com/sferik/openai-ruby
+# gem "ruby-openai"
+
+# awesome_print allows us to `ap` our objects for a clean presentation of them.
+# https://github.com/awesome-print/awesome_print
+# gem "awesome_print"
 
 # YOUR GEMS
 # You can add any Ruby gems you need below. By keeping them separate from our gems above, you'll avoid the likelihood
