@@ -19,9 +19,9 @@
       <%= check.planners.present? ? check.planners.map { |p| p.full_name }.to_sentence : "Not Assigned" %>
       
     </td>
-    <td><%= check.arrival.strftime("%B") %></td>
-    <td><%= check.arrival.strftime("%Y") %></td>
-    <td><%= check.arrival.strftime("%A %B #{check.arrival.day.ordinalize}") %><br/><%= check.departure.strftime("%A %B #{check.departure.day.ordinalize}") %></td>
+    <td><%= check.arrival.strftime("%B") if check.arrival.present? %></td>
+    <td><%= check.arrival.strftime("%Y") if check.arrival.present? %></td>
+    <td><%= check.arrival.strftime("%A %B #{check.arrival.day.ordinalize}") if check.arrival.present? %><br/><%= check.departure.strftime("%A %B #{check.departure.day.ordinalize}") if check.arrival.present? %></td>
     <td>
       <%= check.locations.map { |l| l.name }.to_sentence %><br/>
       <%= check.calculate_days_before > 0 ? pluralize(check.calculate_days_before, "days") + " until arrival" : "Past Event" %>
