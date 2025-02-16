@@ -30,7 +30,13 @@
     </td>
     <td>
       <%= Medform.where(retreat_id: check.id).count %>/<%= check.contract_count %><br/>
-      <%= number_to_percentage((Medform.where(retreat_id: check.id).count.to_f / check.contract_count) * 100, precision: 2) %>
+      <% if check.contract_count && check.contract_count > 0 %>
+        <%= number_to_percentage((Medform.where(retreat_id: check.id).count.to_f / check.contract_count) * 100, precision: 2) %>
+      <% else %>
+        0%
+      <% end %>
+
+      <%# number_to_percentage((Medform.where(retreat_id: check.id).count.to_f / check.contract_count) * 100, precision: 2) %>
         
       </td> 
     <td>
