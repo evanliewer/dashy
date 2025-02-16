@@ -355,8 +355,7 @@ module Circuitree
                       arrival: DateTime.parse(val['ArrivalDateTime']),
                       departure: DateTime.parse(val['DepartureDateTime']),
                       contract_count: val['GuestCount'].to_i,
-                      program_event: true,
-                      internal: true
+                      program_event: true
                     )
                   else
                     puts "Creating new retreat."
@@ -367,8 +366,7 @@ module Circuitree
                       arrival: DateTime.parse(val['ArrivalDateTime']),
                       departure: DateTime.parse(val['DepartureDateTime']),
                       contract_count: val['GuestCount'].to_i,
-                      program_event: true,
-                      internal: true
+                      program_event: true
                     )
                   end
 

@@ -16,8 +16,17 @@ class Account::Flights::ChecksController < Account::ApplicationController
         @checks = Flights::Check.joins(:flight, :retreat)
                             .where(completed_at: nil) # Exclude completed checks
                             .where('(DATE(retreats.arrival) - DATE(?) - COALESCE(flights.warning_alert, 0)) BETWEEN 0 AND 14', Time.zone.today)
+        retreat_ids = Flights::Check.joins(:flight, :retreat)
+                            .where(completed_at: nil) # Exclude completed checks
+                            .where('(DATE(retreats.arrival) - DATE(?) - COALESCE(flights.warning_alert, 0)) BETWEEN 0 AND 14', Time.zone.today)
+                            .pluck('retreats.id') # Only fetch the retreat IDs
+
+        # Use the retrieved IDs to fetch the retreats
+        @retreats = Retreat.where(id: retreat_ids).where.not(program_event: true).distinct
+                    
       when "overdue"
-        @checks = Flights::Check.joins(:flight, :retreat).where(completed_at: nil).where('DATE(retreats.arrival) - DATE(?) - flights.warning_alert <= 0', Time.zone.today)
+        retreat_ids = Flights::Check.joins(:flight, :retreat).where(completed_at: nil).where('DATE(retreats.arrival) - DATE(?) - flights.warning_alert <= 0', Time.zone.today).pluck('retreats.id')
+        @retreats = Retreat.where(id: retreat_ids).where.not(program_event: true).distinct
       when "reset"
         @checks = Flights::Check.all
       else

@@ -22,7 +22,7 @@
                       <% if flightcheck.completed_at.present? %>
                         <%= flightcheck.user&.full_name %> completed on <%= flightcheck.completed_at.strftime("%B #{flightcheck.completed_at.day.ordinalize}") %>
                       <% else %>
-                        <% time_until_warning = (@retreat.arrival.to_date - Time.now.to_date).to_i - flightcheck.flight.warning.to_i %>
+                        <% time_until_warning = (@retreat.arrival.to_date - Time.now.to_date).to_i - flightcheck.flight.warning_alert.to_i %>
                         <% if time_until_warning > 0 %>
                          <%= pluralize(time_until_warning,'day') %>
                         <% else %>

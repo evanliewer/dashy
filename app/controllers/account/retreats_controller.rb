@@ -18,6 +18,8 @@ class Account::RetreatsController < Account::ApplicationController
         @retreats = Retreat.where('arrival >= ? AND arrival <= ?', 7.days.ago.beginning_of_day, Time.current.end_of_day).where(active: true).where(internal: false).order(:arrival)
       when "internal_groups"
         @retreats = Retreat.unscoped.where('arrival > ?', Date.today.beginning_of_day).where(active: true).limit(50).order(:arrival)
+      when "program_retreats"
+        @retreats = Retreat.where('arrival > ?', Date.today.beginning_of_day).where(active: true).where(program_event: true).limit(50).order(:arrival)
       when "forest_center"
         @retreats = Retreat.joins(:locations).where(locations: { name: 'Forest Center' }).where('arrival > ?', Date.today.beginning_of_day).where(active: true).where(internal: false).limit(50).order(:arrival)
       when "lakeview"
@@ -174,7 +176,24 @@ class Account::RetreatsController < Account::ApplicationController
     @department = Department.find(params[:department]) || Department.find_by(name: "Recreation")
     @team = current_team
     @retreat = Retreat.find(params[:id])
-    @retreats = Retreat.all.limit(6)
+    if params[:internal].present?
+      @retreats = Retreat.where.not(internal: true).where('
+            (arrival BETWEEN :arrival AND :departure) OR
+            (departure BETWEEN :arrival AND :departure) OR
+            (:arrival BETWEEN arrival AND departure) OR
+            (:departure BETWEEN arrival AND departure)',
+            arrival: @retreat.arrival,
+            departure: @retreat.departure)
+    else 
+      @retreats = Retreat.where('
+            (arrival BETWEEN :arrival AND :departure) OR
+            (departure BETWEEN :arrival AND :departure) OR
+            (:arrival BETWEEN arrival AND departure) OR
+            (:departure BETWEEN arrival AND departure)',
+            arrival: @retreat.arrival,
+            departure: @retreat.departure)
+    end
+
   end
 
    def kitchen

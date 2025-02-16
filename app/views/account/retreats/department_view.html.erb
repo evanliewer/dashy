@@ -1,12 +1,22 @@
 <%= render 'account/shared/page' do |page| %>
-  <% page.title "Department View for #{@department.name} begining on #{Date.today.in_time_zone("America/Los_Angeles").strftime("%A %B #{Date.today.in_time_zone("America/Los_Angeles").day.ordinalize}")}" %>
+  <% page.title "Department View for #{@department.name} covering all groups who overlap on #{Date.today.in_time_zone("America/Los_Angeles").strftime("%A %B #{Date.today.in_time_zone("America/Los_Angeles").day.ordinalize}")}" %>
   <% page.body do %>
 
 	 <% @retreats.each do |retreat| %>
        <% department = Department.find_by(name: "Recreation") %>
        <% request = Retreats::Request.find_by(department_id: @department.id, retreat_id: retreat.id) %>
 
-      	<div class="bg-white p-6 rounded-lg shadow-md w-full mb-4">
+        <% if Time.zone.now >= retreat.arrival && Time.zone.now <= retreat.departure %>
+         <% dynamic_classes = "border-2 border-green-800" %>
+      <% elsif Time.zone.now > retreat.arrival %>
+         <% dynamic_classes = "border-2 border-red-500" %>
+      <% elsif retreat.program_event == true %>   
+          <% dynamic_classes = "border-4 border-blue-500" %>
+      <% else %>
+         <% dynamic_classes = "border border-grey-500" %>
+      <% end %>
+
+      	<div class="bg-white p-6 rounded-lg shadow-md w-full <%= dynamic_classes %> mb-4">
 	  <h2 class="text-xl font-bold text-gray-700 mb-4"><%= link_to retreat.name, [:account, retreat] %></h2>
 
 	  <p>
@@ -18,7 +28,7 @@
 	  	</p>
 	   <div class="mt-auto text-right">
 	   	 <p><%= retreat.arrival.in_time_zone("America/Los_Angeles").strftime("%A %B #{retreat.arrival.in_time_zone("America/Los_Angeles").day.ordinalize} %-l:%M%P") %> - <%= retreat.departure.in_time_zone("America/Los_Angeles").strftime("%A %B #{retreat.departure.in_time_zone("America/Los_Angeles").day.ordinalize} %-l:%M%P") %></p>
-   		 <p><strong><%= retreat.locations.present? ? retreat.locations.map { |p| p.name }.to_sentence : "Not Assigned" %> | </strong> <%= retreat.planners.present? ? retreat.planners.map { |p| p.full_name }.to_sentence : "Not Assigned" %></p>
+   		 <p><strong><%= retreat.locations.present? ? retreat.locations.map { |p| p.name }.to_sentence : "No Location Assigned" %> | </strong> <%= retreat.planners.present? ? retreat.planners.map { |p| p.full_name }.to_sentence : "No Planner Assigned" %></p>
    		 <p>
    		 	<% begin %>
    		 		Last Updated: <%= distance_of_time_in_words(Time.zone.now, request.updated_at.in_time_zone('America/Los_Angeles')) %> ago
