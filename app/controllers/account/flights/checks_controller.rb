@@ -4,7 +4,7 @@ class Account::Flights::ChecksController < Account::ApplicationController
   # GET /account/teams/:team_id/flights/checks
   # GET /account/teams/:team_id/flights/checks.json
   def index
-    @group_retreats = Retreat.where.not(internal: true).order('arrival DESC')
+    @group_retreats = Retreat.where.not(internal: true).order('arrival DESC').limit(50)
     @q = @group_retreats.ransack(params[:q])
     @retreats = @q.result(distinct: true)
 
