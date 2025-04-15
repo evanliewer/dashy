@@ -65,16 +65,16 @@
         <% unless hide_actions %>
           <% if context == team %>
             <% if can? :create, Flights::Check.new(team: team) %>
-              <%= link_to t('.buttons.new'), [:new, :account, team, :flights_check], class: "#{first_button_primary(:flights_check)} new" %>
+              <%# link_to t('.buttons.new'), [:new, :account, team, :flights_check], class: "#{first_button_primary(:flights_check)} new" %>
             <% end %>
           <% end %>
 
           <%# 🚅 super scaffolding will insert new targets one parent action model buttons above this line. %>
           <%# 🚅 super scaffolding will insert new bulk action model buttons above this line. %>
-          <%= render "shared/bulk_action_select" if checks.any? %>
+          <%# render "shared/bulk_action_select" if checks.any? %>
 
           <% unless hide_back %>
-            <%= link_to t('global.buttons.back'), [:account, context], class: "#{first_button_primary(:flights_check)} back" %>
+            <%# link_to t('global.buttons.back'), [:account, context], class: "#{first_button_primary(:flights_check)} back" %>
           <% end %>
         <% end %>
       <% end %>

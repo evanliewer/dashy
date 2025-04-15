@@ -147,7 +147,7 @@ gem "bullet_train-themes-tailwind_css", BULLET_TRAIN_VERSION
 gem "devise"
 gem "devise-two-factor"
 gem "rqrcode"
-
+ 
 # Admin panel
 gem "avo", ">= 3.1.7"
 
