@@ -36,7 +36,7 @@ gem "cssbundling-rails"
 gem "jbuilder"
 
 # Use Redis adapter to run Action Cable in production
-gem "redis", "~> 5.3.0"
+gem "redis", "~> 5.4.0"
 
 # Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
 # gem "kredis"
@@ -117,7 +117,7 @@ end
 
 # We use a constant here so that we can ensure that all of the bullet_train-*
 # packages are on the same version.
-BULLET_TRAIN_VERSION = "1.17.1"
+BULLET_TRAIN_VERSION = "1.19.2"
 
 # Core packages.
 gem "bullet_train", BULLET_TRAIN_VERSION
@@ -150,6 +150,15 @@ gem "rqrcode"
  
 # Admin panel
 gem "avo", ">= 3.1.7"
+
+# Background processing
+gem "sidekiq"
+
+# Protect the API routes via CORS
+gem "rack-cors"
+
+# Easy and automatic inline CSS for mailers
+gem "premailer-rails"
 
 group :development do
   # Open any sent emails in your browser instead of having to setup an SMTP trap.
@@ -234,12 +243,22 @@ gem "active_hash"
 
 # The bullet_train-action_models gem can use OpenAI during the CSV import process to
 # automatically match column names to database attributes.
-# https://github.com/sferik/openai-ruby
+# https://github.com/alexrudall/ruby-openai
 # gem "ruby-openai"
 
 # awesome_print allows us to `ap` our objects for a clean presentation of them.
 # https://github.com/awesome-print/awesome_print
 # gem "awesome_print"
+
+# xxhash was previously used by the `core` gems in the generation of random colors for user & team icons.
+# If you have an existing app and need to preserve the random colors that were previously being generated
+# you can do so by including xxhash here. For new apps, or if you don't care about preserving the colors,
+# then there's no reason to include it.
+# gem "xxhash"
+
+# unicode-emoji is used by one method (strip_emojis) in the `core` repo that we don't seem to use anywhere.
+# If you are using that method then you can uncomment this gem.
+# gem "unicode-emoji"
 
 # YOUR GEMS
 # You can add any Ruby gems you need below. By keeping them separate from our gems above, you'll avoid the likelihood
